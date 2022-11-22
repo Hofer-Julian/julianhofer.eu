@@ -21,7 +21,7 @@ taxonomies = [
 [markdown]
 highlight_code = true
 extra_syntaxes = []          
-highlight_theme = "nord"         # The highlight theme, choose one at https://www.getzola.org/documentation/getting-started/configuration/#syntax-highlighting
+highlight_theme = "OneHalfDark"         # The highlight theme, choose one at https://www.getzola.org/documentation/getting-started/configuration/#syntax-highlighting
 render_emoji = true
 external_links_target_blank = false
 external_links_no_follow = true
@@ -35,13 +35,13 @@ anchors = "on"
 
 #=========================================================================================
 [extra]
-name = "xxxx"                    # Your name
-id = "xxxx"                      # Your id/username/handle
-bio = "xxxx"                     # Your bio
-avatar = "img/avatar.webp"       # Your avatar
+name = "Julian Hofer"                             # Your name
+id = ""                                           # Your id/username/handle
+bio = "Numerical software developer at Deltares"   # Your bio
+avatar = "img/avatar.webp"                        # Your avatar
 
-show_id = true                   # Whether to show your id in homepage
-show_projects = false            # Whether to show projects page
+show_id = false                                   # Whether to show your id in homepage
+show_projects = false                             # Whether to show projects page
 
 #============== Icons, you can choose at https://remixicon.com/ ====
 blog_icon = "ri-quill-pen-line"          
@@ -53,7 +53,7 @@ toc_icon = "ri-menu-2-line"
 #============== Social media links =================================
 links = [
     {name = "GitHub", icon = "ri-github-line", url = "https://github.com/Hofer-Julian"},
-    {name = "Mastodon", icon = "ri-mastodon-line", url = "https://chaos.social/@ju"},
+    {name = "Mastodon", icon = "ri-mastodon-fill", url = "https://chaos.social/@ju"},
     {name = "LinkedIn", icon = "ri-linkedin-line", url = "https://www.linkedin.com/in/hofer-julian/"}
     # Your can add more links
 ]
@@ -74,7 +74,7 @@ outdate_warn_text_before = "Note: This article was last updated "
 outdate_warn_text_after = " days ago and may be out of date."
 
 #============== Footer =============================================
-footer_copyright_name = "<your-name>"
+footer_copyright_name = "Julian Hofer"
 footer_copyright_year = "2022"
 # footer_custom = "xxxxxxxx"
 footer_credits = true            # Whether to show "Powered by Zola and Serene" in footer
