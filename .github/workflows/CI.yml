@@ -9,7 +9,7 @@ jobs:
       - name: build_and_deploy
         uses: shalzz/zola-deploy-action@v0.16.1
         env:
-          TOKEN: $GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   codespell:
     name: Spell Check with Typos
     runs-on: ubuntu-latest
