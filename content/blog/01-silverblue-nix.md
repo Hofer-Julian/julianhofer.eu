@@ -46,7 +46,8 @@ Description=Ensure /nix is present
 Type=oneshot
 ExecStartPre=chattr -i /
 ExecStart=mkdir -p -m 0755 /nix
-EcecStopPost=chattr +i /
+ExecStart=chown -R YOUR_USER
+EcecStop=chattr +i /
 ```
 
 `sudo systemctl edit --full --force nix.mount`
@@ -57,7 +58,7 @@ Description=Mount /nix from ~/.nix
 After=local-fs.target var-home.mount ensure-nix-dir.service
 Wants=ensure-nix-dir.service
 [Mount]
-Options=bind,nofail,owner=YOUR_USER
+Options=bind,nofail
 What=/home/YOUR_USER/.nix
 Where=/nix
 [Install]
@@ -81,6 +82,11 @@ WantedBy=multi-user.target
 `export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}`
 
 `nix-shell '<home-manager>' -A install`
+
+Now log off and log in again.
+After opening your terminal `home-manager` should be in your `PATH`.
+You can edit its config file by executing:
+`home-manager edit`
 
 
 ```nix
