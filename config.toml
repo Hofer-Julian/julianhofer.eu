@@ -37,7 +37,7 @@ anchors = "on"
 [extra]
 name = "Julian Hofer"                             # Your name
 id = ""                                           # Your id/username/handle
-bio = "Numerical software developer at Deltares"   # Your bio
+bio = "Numerical software developer and GNOME foundation member"  # Your bio
 avatar = "img/avatar.webp"                        # Your avatar
 
 show_id = false                                   # Whether to show your id in homepage
@@ -54,7 +54,8 @@ toc_icon = "ri-menu-2-line"
 links = [
     {name = "GitHub", icon = "ri-github-line", url = "https://github.com/Hofer-Julian"},
     {name = "Mastodon", icon = "ri-mastodon-fill", url = "https://chaos.social/@ju"},
-    {name = "LinkedIn", icon = "ri-linkedin-line", url = "https://www.linkedin.com/in/hofer-julian/"}
+    {name = "LinkedIn", icon = "ri-linkedin-box-fill", url = "https://www.linkedin.com/in/hofer-julian/"},
+    {name = "Email", icon = "ri-mail-line", url = "mailto:julianhofer@gnome.org"},
     # Your can add more links
 ]
 
