@@ -22,15 +22,15 @@ You always move between immutable images of your operating system, but that also
 For GUI applications the answer to this is `flatpak` and it's app store [flathub](https://flathub.org/home)
 For everything else you can enter a mutable Fedora container with the help of [toolbx](https://containertoolbx.org/).
 There, the `dnf` command is readily available and can be used as usual.
-This is convenient for development, but not necessarily outside of it.
+This is convenient for development, but not necessarily outside it.
 Whenever you want to use an installed CLI tool, you now have to enter the toolbx beforehand.
-Also there are a couple of system directories that are inaccessible inside the container.
+Also, there are a couple of system directories that are inaccessible inside the container.
  
 # Nix
 
 Nix is a cross-platform package manager with the [largest repository](https://repology.org/repositories/statistics/total) at the of this writing.
 Like with Silverblue, upgrades in Nix are atomic and can be rolled back.
-The only problem is that Nix expects to be able to store it's date at `/nix` which cannot be just created on Silverblue.
+The only problem is that Nix expects to be able to store its date at `/nix` which cannot be just created on Silverblue.
 
 ## Mount `/nix`
 
@@ -38,7 +38,7 @@ What we can do however is it have the nix store at a different directory and the
 First we add a systemd [service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html) which ensures that the directory `/nix` is present.
 For that, the service has to temporarily disable the immutability of `/` with `chattr`.
 Run the following command to create or modify the service.
-Also make sure to replace `YOUR_USER` with your actual user name. 
+Also make sure to replace `YOUR_USER` with your actual username. 
 
 ```bash
 $ sudo systemctl edit --full --force ensure-nix-dir.service
@@ -57,7 +57,7 @@ EcecStop=chattr +i /
 ```
 
 Now we create a [mount unit](https://www.freedesktop.org/software/systemd/man/systemd.mount.html) which mounts `/nix` from `~/.nix` during start up.
-Again, replace `YOUR_USER` with your user name.
+Again, replace `YOUR_USER` with your username.
 
 
 ```bash
@@ -198,14 +198,14 @@ This also means that if you remove a setting or package in the config file that 
 # Toolbx
 
 Most of the things you can do with a toolbx you can also do with Nix, but there is a steep learning curve.
-At least at the beginning you will want to be able to access the config and packages managed by Home Manager inside of your toolbx.
+At least at the beginning you will want to be able to access the config and packages managed by Home Manager inside your toolbx.
 
 First enter your toolbx.
 ```bash
 $ toolbox enter
 ```
 
-The create a symlink from `~/.nix` to `/nix`.
+Then create a symlink from `~/.nix` to `/nix`.
 
 ```bash
 $ sudo ln -s ~/.nix /nix
