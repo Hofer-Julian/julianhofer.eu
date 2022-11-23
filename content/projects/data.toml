@@ -16,7 +16,7 @@ links = [
 ]
 
 [[project]]
-name = "MODFLOW6"
+name = "MODFLOW 6"
 desc = "Finite-difference model to solve groundwater flow."
 links = [
 	{name = "Website", url = "https://www.usgs.gov/software/modflow-6-usgs-modular-hydrologic-model"},
