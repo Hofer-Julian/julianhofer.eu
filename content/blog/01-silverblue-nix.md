@@ -23,7 +23,7 @@ For GUI applications the answer to this is `flatpak` and it's app store [flathub
 For everything else you can enter a mutable Fedora container with the help of [toolbx](https://containertoolbx.org/).
 There, the `dnf` command is readily available and can be used as usual.
 This is convenient for development, but not necessarily outside of it.
-Whenever you want to use an installed CLI tool, you now have to enter the toolbox beforehand.
+Whenever you want to use an installed CLI tool, you now have to enter the toolbx beforehand.
 Also there are a couple of system directories that are inaccessible inside the container.
  
 # Nix
@@ -34,9 +34,15 @@ The only problem is that Nix expects to be able to store it's date at `/nix` whi
 
 ## Mount `/nix`
 
+What we can do however is it have the nix store at a different directory and then mount this directory at `/nix`.
+First we add a systemd [service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html) which ensures that the directory `/nix` is present.
+For that, the service has to temporarily disable the immutability of `/` with `chattr`.
+Run the following command to create or modify the service.
+Also make sure to replace `YOUR_USER` with your actual user name. 
 
-
-`sudo systemctl edit --full --force ensure-nix-dir.service`
+```bash
+$ sudo systemctl edit --full --force ensure-nix-dir.service
+```
 
 
 ```ini
@@ -50,7 +56,13 @@ ExecStart=chown -R YOUR_USER
 EcecStop=chattr +i /
 ```
 
-`sudo systemctl edit --full --force nix.mount`
+Now we create a [mount unit](https://www.freedesktop.org/software/systemd/man/systemd.mount.html) which mounts `/nix` from `~/.nix` during start up.
+Again, replace `YOUR_USER` with your user name.
+
+
+```bash
+$ sudo systemctl edit --full --force nix.mount
+```
 
 ```ini
 [Unit]
@@ -65,29 +77,79 @@ Where=/nix
 WantedBy=multi-user.target
 ```
 
-`sudo systemctl enable --now nix.mount`
+In order to immediately activate the mount, execute the following:
+
+```bash
+$ sudo systemctl enable --now nix.mount
+```
+
+If you now check up on `/nix` it should be owned by your user and have the following permission bits:
+
+```bash
+$ ls -ld /nix
+drwxr-xr-x. 1 YOUR_USER root 16 22. Nov 18:08 /nix/
+```
 
 ## Install Nix
 
-`sh <(curl -L https://nixos.org/nix/install) --no-daemon`
+Next we perform a single-user installation of Nix as described in the [Nix manual](https://nixos.org/manual/nix/stable/installation/installing-binary.html#single-user-installation).
 
-`source $HOME/.nix-profile/etc/profile.d/nix.sh`
+```bash
+$ sh <(curl -L https://nixos.org/nix/install) --no-daemon
+```
+
+In order to have the corresponding tools in your `PATH` either restart your shell or source `nix.sh` as shown below.
+
+```bash
+$ source $HOME/.nix-profile/etc/profile.d/nix.sh
+```
+
+Now you can install tools on your machine with [`nix-env`](https://nixos.org/manual/nix/stable/command-ref/nix-env.html).
+If that's all you want, then you can skip over to the last [section](./#toolbx).
 
 # Home Manager
 
-`nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager`
+Home Manager is a tool that allows declarative configuration of user specific packages and dotfiles.
+This not only helps you to keep track which changes you made to your user environment, but also greatly reduces the amount of work necessary to migrate to a new machine.
+Convinced?
+Then let's get started!
 
-`nix-channel --update`
+First we add the `home-manager` channel to our nix channels.
 
-`export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}`
+```bash
+$ nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+```
 
-`nix-shell '<home-manager>' -A install`
+Then we update our nix-channels.
+
+```bash
+$ nix-channel --update
+```
+
+Home Manager requres `NIX_PATH` to be set before we install it so let's export it.
+
+```bash
+$ export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
+```
+
+Now we can install `home-manager` with `nix-shell`.
+
+```bash
+$ nix-shell '<home-manager>' -A install
+```
 
 Now log off and log in again.
 After opening your terminal `home-manager` should be in your `PATH`.
 You can edit its config file by executing:
-`home-manager edit`
 
+```bash
+$ home-manager edit
+```
+
+This should open a file with a couple of values already set.
+In the following snippet you see:
+- how to set your git data with useful [extra config](https://leosiddle.com/posts/2020/07/git-config-pull-rebase-autostash/), and
+- how to ensure that a set of nix packages are installed
 
 ```nix
 { config, pkgs, ... }:
@@ -96,6 +158,7 @@ You can edit its config file by executing:
   # Leave `home.username`, `home.homeDirectory`, `home.stateVersion`
   # and `programs.home-manager.enable` as they are 
   
+  # Set git config 
   programs.git = {
     enable = true;
     userName  = "Julian Hofer";
@@ -124,15 +187,36 @@ You can edit its config file by executing:
 }
 ```
 
-# Toolbox
+Now we activate our config file by executing
 
-`toolbox enter`
-`sudo ln -s ~/.nix /nix`
+```bash
+$ home-manager switch
+```
+
+This also means that if you remove a setting or package in the config file that it will be removed on your system as well.
+
+# Toolbx
+
+Most of the things you can do with a toolbx you can also do with Nix, but there is a steep learning curve.
+At least at the beginning you will want to be able to access the config and packages managed by Home Manager inside of your toolbx.
+
+First enter your toolbx.
+```bash
+$ toolbox enter
+```
+
+The create a symlink from `~/.nix` to `/nix`.
+
+```bash
+$ sudo ln -s ~/.nix /nix
+```
 
 Leave toolbox and enter again.
-Now, you should be able to view your git config with the cat-replacement [`bat`](https://github.com/sharkdp/bat#syntax-highlighting):
+To see if everything is working as expected you can try to view your git config with the cat-replacement [`bat`](https://github.com/sharkdp/bat#syntax-highlighting):
 
-`bat $HOME/.config/git/config`
+```bash
+$ bat ~/.config/git/config
+```
 
 
 ![The content of git config on a terminal as displayed by bat with syntax highlighting](/posts/01-silverblue-nix/bat-output.png)
