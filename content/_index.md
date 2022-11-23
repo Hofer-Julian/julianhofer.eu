@@ -5,8 +5,7 @@ template = 'home.html'
 lang = 'en'
 +++
 
-I enjoy dealing with computers, languages and physics.
-Especially in combination.
+I enjoy dealing with computers, languages and physics — especially in combination.
 
 I also like to travel — including the part where you get to listen to audiobooks on long train rides.
 
