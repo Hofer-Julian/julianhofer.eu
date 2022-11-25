@@ -1,7 +1,7 @@
 +++
 title = "How to install Nix on Fedora Silverblue"
-date = 2099-12-12
-draft = true
+date = 2022-11-25
+draft = false
 
 [taxonomies]
 categories = ["Fedora", "Nix"]
@@ -17,28 +17,28 @@ outdate_warn = false
 +++
 
 There is a lot to like about [Fedora Silverblue](https://docs.fedoraproject.org/en-US/fedora-silverblue/).
-Updates are atomic and if there is something wrong with the newest version you can always roll back.
+Updates are atomic and if there is something wrong with the newest version, you can always roll back.
 You always move between immutable images of your operating system, but that also means that installing packages with `dnf` doesn't work anymore.
-For GUI applications the answer to this is `flatpak` and it's app store [flathub](https://flathub.org/home)
+For GUI applications, the answers to this are `flatpak` and its app store [flathub](https://flathub.org/home).
 For everything else you can enter a mutable Fedora container with the help of [toolbx](https://containertoolbx.org/).
 There, the `dnf` command is readily available and can be used as usual.
 This is convenient for development, but not necessarily outside it.
 Whenever you want to use an installed CLI tool, you now have to enter the toolbx beforehand.
-Also, there are a couple of system directories that are inaccessible inside the container.
+Also, there are a couple of system directories that are inaccessible from within the container.
  
 # Nix
 
-Nix is a cross-platform package manager with the [largest repository](https://repology.org/repositories/statistics/total) at the of this writing.
+Nix is a cross-platform package manager with the [largest repository](https://repology.org/repositories/statistics/total) at the time of this writing.
 Like with Silverblue, upgrades in Nix are atomic and can be rolled back.
-The only problem is that Nix expects to be able to store its date at `/nix` which cannot be just created on Silverblue.
+The only problem is that Nix expects to be able to store its date at `/nix`, which cannot simply be created on Silverblue.
 
 ## Mount `/nix`
 
-What we can do however is it have the nix store at a different directory and then mount this directory at `/nix`.
-First we add a systemd [service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html) which ensures that the directory `/nix` is present.
+What we can do however, is to have the nix store at a different directory and then mount this directory at `/nix`.
+First, we add a systemd [service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html) which ensures that the directory `/nix` is present.
 For that, the service has to temporarily disable the immutability of `/` with `chattr`.
 Run the following command to create or modify the service.
-Also make sure to replace `YOUR_USER` with your actual username. 
+Also, make sure to replace `YOUR_USER` with your actual username. 
 
 ```bash
 $ sudo systemctl edit --full --force ensure-nix-dir.service
@@ -83,7 +83,7 @@ In order to immediately activate the mount, execute the following:
 $ sudo systemctl enable --now nix.mount
 ```
 
-If you now check up on `/nix` it should be owned by your user and have the following permission bits:
+If you now check up on `/nix`, it should be owned by your user and have the following permission bits:
 
 ```bash
 $ ls -ld /nix
@@ -92,13 +92,13 @@ drwxr-xr-x. 1 YOUR_USER root 16 22. Nov 18:08 /nix/
 
 ## Install Nix
 
-Next we perform a single-user installation of Nix as described in the [Nix manual](https://nixos.org/manual/nix/stable/installation/installing-binary.html#single-user-installation).
+Next, we perform a single-user installation of Nix as described in the [Nix manual](https://nixos.org/manual/nix/stable/installation/installing-binary.html#single-user-installation).
 
 ```bash
 $ sh <(curl -L https://nixos.org/nix/install) --no-daemon
 ```
 
-In order to have the corresponding tools in your `PATH` either restart your shell or source `nix.sh` as shown below.
+In order to have the corresponding tools in your `$PATH`, either restart your shell or source `nix.sh` as shown below.
 
 ```bash
 $ source $HOME/.nix-profile/etc/profile.d/nix.sh
@@ -114,7 +114,7 @@ This not only helps you to keep track which changes you made to your user enviro
 Convinced?
 Then let's get started!
 
-First we add the `home-manager` channel to our nix channels.
+First, we add the `home-manager` channel to our nix channels.
 
 ```bash
 $ nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
@@ -126,7 +126,7 @@ Then we update our nix-channels.
 $ nix-channel --update
 ```
 
-Home Manager requres `NIX_PATH` to be set before we install it so let's export it.
+Home Manager requires `NIX_PATH` to be set before we install it, so let's export it.
 
 ```bash
 $ export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
@@ -139,7 +139,7 @@ $ nix-shell '<home-manager>' -A install
 ```
 
 Now log off and log in again.
-After opening your terminal `home-manager` should be in your `PATH`.
+After opening your terminal, `home-manager` should be in your `PATH`.
 You can edit its config file by executing:
 
 ```bash
@@ -149,7 +149,7 @@ $ home-manager edit
 This should open a file with a couple of values already set.
 In the following snippet you see:
 - how to set your git data with useful [extra config](https://leosiddle.com/posts/2020/07/git-config-pull-rebase-autostash/), and
-- how to ensure that a set of nix packages are installed
+- how to ensure that a set of nix packages are installed.
 
 ```nix
 { config, pkgs, ... }:
@@ -193,7 +193,7 @@ Now we activate our config file by executing
 $ home-manager switch
 ```
 
-This also means that if you remove a setting or package in the config file that it will be removed on your system as well.
+This also means that if you remove a setting or package in the config file, it will be removed on your system as well.
 
 # Toolbx
 
@@ -212,7 +212,7 @@ $ sudo ln -s ~/.nix /nix
 ```
 
 Leave toolbox and enter again.
-To see if everything is working as expected you can try to view your git config with the cat-replacement [`bat`](https://github.com/sharkdp/bat#syntax-highlighting):
+To see if everything is working as expected, you can try to view your git config with the cat-replacement [`bat`](https://github.com/sharkdp/bat#syntax-highlighting):
 
 ```bash
 $ bat ~/.config/git/config
