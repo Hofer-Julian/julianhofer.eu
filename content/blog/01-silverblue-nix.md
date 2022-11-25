@@ -224,5 +224,5 @@ $ bat ~/.config/git/config
 
 # References
 
-- https://gitlab.com/ahayzen/silverblue-nix
-- https://www.reddit.com/r/SteamDeck/comments/yxpmlq/nix_homemanager_on_steam_deck/
+- [gitlab.com/ahayzen/silverblue-nix](https://gitlab.com/ahayzen/silverblue-nix)
+- [reddit.com/r/SteamDeck/comments/yxpmlq/nix_homemanager_on_steam_deck](https://www.reddit.com/r/SteamDeck/comments/yxpmlq/nix_homemanager_on_steam_deck/)
