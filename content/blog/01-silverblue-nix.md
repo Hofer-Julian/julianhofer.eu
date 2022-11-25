@@ -30,7 +30,7 @@ Also, there are a couple of system directories that are inaccessible from within
 
 Nix is a cross-platform package manager with the [largest repository](https://repology.org/repositories/statistics/total) at the time of this writing.
 Like with Silverblue, upgrades in Nix are atomic and can be rolled back.
-The only problem is that Nix expects to be able to store its date at `/nix`, which cannot simply be created on Silverblue.
+The only problem is that Nix expects to be able to store its data at `/nix`, which cannot simply be created on Silverblue.
 
 ## Mount `/nix`
 
