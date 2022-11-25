@@ -149,7 +149,7 @@ $ home-manager edit
 This should open a file with a couple of values already set.
 In the following snippet you see:
 - how to set your git data with useful [extra config](https://leosiddle.com/posts/2020/07/git-config-pull-rebase-autostash/), and
-- how to ensure that a set of nix packages are installed.
+- how to ensure that a set of nix packages is installed.
 
 ```nix
 { config, pkgs, ... }:
