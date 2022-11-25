@@ -220,3 +220,9 @@ $ bat ~/.config/git/config
 
 
 ![The content of git config on a terminal as displayed by bat with syntax highlighting](/posts/01-silverblue-nix/bat-output.png)
+
+
+# References
+
+- https://gitlab.com/ahayzen/silverblue-nix
+- https://www.reddit.com/r/SteamDeck/comments/yxpmlq/nix_homemanager_on_steam_deck/
