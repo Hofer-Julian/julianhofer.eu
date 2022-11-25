@@ -195,6 +195,14 @@ $ home-manager switch
 
 This also means that if you remove a setting or package in the config file, it will be removed on your system as well.
 
+In order to update your environment run:
+```bash
+$ nix-channel --update
+...
+unpacking channels...
+$ home-manager switch
+```
+
 # Toolbx
 
 Most of the things you can do with a toolbx you can also do with Nix, but there is a steep learning curve.
