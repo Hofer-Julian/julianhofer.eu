@@ -138,8 +138,8 @@ Now we can install `home-manager` with `nix-shell`.
 $ nix-shell '<home-manager>' -A install
 ```
 
-Now log off and log in again.
-After opening your terminal, `home-manager` should be in your `PATH`.
+Log off and log in again.
+After opening your terminal, `home-manager` should be in your `$PATH`.
 You can edit its config file by executing:
 
 ```bash
