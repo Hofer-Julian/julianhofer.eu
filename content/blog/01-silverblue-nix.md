@@ -187,6 +187,7 @@ In the following snippet you see:
 }
 ```
 
+
 Now we activate our config file by executing
 
 ```bash
@@ -226,9 +227,9 @@ To see if everything is working as expected, you can try to view your git config
 $ bat ~/.config/git/config
 ```
 
-
 ![The content of git config on a terminal as displayed by bat with syntax highlighting](/posts/01-silverblue-nix/bat-output.png)
 
+You can find the discussion at this Mastodon [post](https://chaos.social/@ju/109403606881379264).
 
 # References
 
