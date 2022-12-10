@@ -126,3 +126,5 @@ with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
     server.login(sender_email, password)
     server.send_message(msg)
 ```
+
+You can find the discussion at this Mastodon [post](https://chaos.social/@ju/109489141171195265).
