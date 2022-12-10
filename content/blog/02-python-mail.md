@@ -1,7 +1,7 @@
 +++
 title = "How to send Emails via Python"
 date = 2022-12-08
-draft = true
+draft = false
 
 [taxonomies]
 categories = ["Python", "Email"]
