@@ -1,0 +1,79 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content="light dark" name=color-scheme><title>How to send Emails via Python</title><meta name=description><link href=/img/favicon-32x32.png rel=icon sizes=32x32 type=image/png><link href=/img/favicon-16x16.png rel=icon sizes=16x16 type=image/png><link href=/img/apple-touch-icon.png rel=apple-touch-icon sizes=180x180><link href=https://fonts.googleapis.com rel=preconnect><link href=https://fonts.gstatic.com rel=preconnect><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Jost&display=swap" rel=stylesheet><link href=https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css rel=stylesheet><link href=/css/var.css rel=stylesheet><link href=/css/base.css rel=stylesheet><link href=/css/header.css rel=stylesheet><link href=/css/footer.css rel=stylesheet><link href=/css/post.css rel=stylesheet><body><script>if(localStorage.getItem('theme')=='dark'){document.body.classList.add('dark-mode');}</script><header class=blur><div class=top><a class="header blog" href=/blog><i class="ri-quill-pen-line ri-2x"></i><span>Blog</span></a><a class=back href=/><i class="ri-arrow-left-s-line ri-1x"></i><span>Home</span></a><div class=icon><a aria-label=home href=/ id=go-home><i class="ri-user-6-line ri-xl"></i></a><a aria-label="rss feed" href=/blog/feed.xml><i class="ri-rss-line ri-xl"></i></a><button aria-label="dark light mode switch" id=color-toggle><i class="ri-moon-line ri-xl"></i></button><button aria-label="table of content" id=toc-toggle><i class="ri-menu-2-line ri-xl"></i></button></div></div><div id=progress-bar></div></header><div class=wrap><div class=blank></div><main><div id=top></div><article><h1>How to send Emails via Python</h1><div id=post-info><div class=date><span id=publish>2022-12-08</span></div><div class=tags><a class=tag href=https://julianhofer.eu/tags/python><i class="ri-hashtag ri-sm"></i><span>Python</span></a><a class=tag href=https://julianhofer.eu/tags/email><i class="ri-hashtag ri-sm"></i><span>Email</span></a></div></div><p>I've assumed that sending emails via a CLI would be easy. That might even be the case, but sending them in a way that they actually show up in the receiver's mailbox is quite a different story. After following multiple tutorials and using tools from <code>sendmail</code> to <code>mailx</code>, not a single email arrived. Since I wanted to send the mail from within a Python script anyway, I moved on to a Real Python <a rel="nofollow noreferrer" href=https://realpython.com/python-send-email/>tutorial</a>. This is the snippet they use to send an email.<pre class=language-python data-lang=python style=background-color:#282c34;color:#dcdfe4;><code class=language-python data-lang=python><span style=color:#c678dd;>import </span><span>smtplib, ssl
+</span><span>
+</span><span>port </span><span style=color:#c678dd;>= </span><span style=color:#e5c07b;>465  </span><span style=color:#5c6370;># For SSL
+</span><span>smtp_server </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"smtp.domain.com"
+</span><span>sender_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"my@domain.com"      </span><span style=color:#5c6370;># Enter your address
+</span><span>receiver_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"your@domain.com"  </span><span style=color:#5c6370;># Enter receiver address
+</span><span>password </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"MY_PASSWORD"            </span><span style=color:#5c6370;># Enter password
+</span><span>message </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"""\
+</span><span style=color:#98c379;>Subject: Hi there
+</span><span style=color:#98c379;>
+</span><span style=color:#98c379;>This message is sent from Python."""
+</span><span>
+</span><span>context </span><span style=color:#c678dd;>= </span><span>ssl.</span><span style=color:#e06c75;>create_default_context</span><span>()
+</span><span style=color:#c678dd;>with </span><span>smtplib.</span><span style=color:#e06c75;>SMTP_SSL</span><span>(smtp_server, port, </span><span style=color:#e06c75;>context</span><span style=color:#c678dd;>=</span><span>context) </span><span style=color:#c678dd;>as </span><span>server:
+</span><span>    server.</span><span style=color:#e06c75;>login</span><span>(sender_email, password)
+</span><span>    server.</span><span style=color:#e06c75;>sendmail</span><span>(sender_email, receiver_email, message)
+</span></code></pre><p>And again, nothing arrived at my preferred receiver <a rel="nofollow noreferrer" href=https://proton.me/mail>protonmail</a>. However, if you try to email to a gmail address, you get a helpful error back.<pre style=background-color:#282c34;color:#dcdfe4;><code><span>Our system has detected that this message is not RFC 550-5.7.1 5322
+</span><span>compliant: 'From' header is missing. To reduce the amount of spam sent
+</span><span>to Gmail, this message has been blocked.
+</span></code></pre><p>This is how the snippet looks after adding the 'From' header:<pre class=language-python data-lang=python style=background-color:#282c34;color:#dcdfe4;><code class=language-python data-lang=python><span style=color:#c678dd;>import </span><span>smtplib, ssl
+</span><span>
+</span><span>port </span><span style=color:#c678dd;>= </span><span style=color:#e5c07b;>465  </span><span style=color:#5c6370;># For SSL
+</span><span>smtp_server </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"smtp.domain.com"
+</span><span>sender_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"my@domain.com"      </span><span style=color:#5c6370;># Enter your address
+</span><span>receiver_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"your@domain.com"  </span><span style=color:#5c6370;># Enter receiver address
+</span><span>password </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"MY_PASSWORD"            </span><span style=color:#5c6370;># Enter password
+</span><span style=color:#5c6370;># 👇 The string is now a f-string and the 'From' header has been added
+</span><span>message </span><span style=color:#c678dd;>= f</span><span style=color:#98c379;>"""\
+</span><span style=color:#98c379;>From: <</span><span>{sender_email}</span><span style=color:#98c379;>>
+</span><span style=color:#98c379;>Subject: Hi there
+</span><span style=color:#98c379;>
+</span><span style=color:#98c379;>This message is sent from Python."""
+</span><span>
+</span><span>context </span><span style=color:#c678dd;>= </span><span>ssl.</span><span style=color:#e06c75;>create_default_context</span><span>()
+</span><span style=color:#c678dd;>with </span><span>smtplib.</span><span style=color:#e06c75;>SMTP_SSL</span><span>(smtp_server, port, </span><span style=color:#e06c75;>context</span><span style=color:#c678dd;>=</span><span>context) </span><span style=color:#c678dd;>as </span><span>server:
+</span><span>    server.</span><span style=color:#e06c75;>login</span><span>(sender_email, password)
+</span><span>    server.</span><span style=color:#e06c75;>sendmail</span><span>(sender_email, receiver_email, message)
+</span></code></pre><p>And voilà, the email arrives at gmail. Again nothing at protonmail, but now it wasn't too hard to guess that it might want a 'To' header.<pre class=language-python data-lang=python style=background-color:#282c34;color:#dcdfe4;><code class=language-python data-lang=python><span style=color:#c678dd;>import </span><span>smtplib, ssl
+</span><span>
+</span><span>port </span><span style=color:#c678dd;>= </span><span style=color:#e5c07b;>465  </span><span style=color:#5c6370;># For SSL
+</span><span>smtp_server </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"smtp.domain.com"
+</span><span>sender_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"my@domain.com"      </span><span style=color:#5c6370;># Enter your address
+</span><span>receiver_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"your@domain.com"  </span><span style=color:#5c6370;># Enter receiver address
+</span><span>password </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"MY_PASSWORD"            </span><span style=color:#5c6370;># Enter password
+</span><span style=color:#5c6370;># 👇 The 'To' header has been added
+</span><span>message </span><span style=color:#c678dd;>= f</span><span style=color:#98c379;>"""\
+</span><span style=color:#98c379;>From: <</span><span>{sender_email}</span><span style=color:#98c379;>>
+</span><span style=color:#98c379;>To: <</span><span>{receiver_email}</span><span style=color:#98c379;>>
+</span><span style=color:#98c379;>Subject: Hi there
+</span><span style=color:#98c379;>
+</span><span style=color:#98c379;>This message is sent from Python."""
+</span><span>
+</span><span>context </span><span style=color:#c678dd;>= </span><span>ssl.</span><span style=color:#e06c75;>create_default_context</span><span>()
+</span><span style=color:#c678dd;>with </span><span>smtplib.</span><span style=color:#e06c75;>SMTP_SSL</span><span>(smtp_server, port, </span><span style=color:#e06c75;>context</span><span style=color:#c678dd;>=</span><span>context) </span><span style=color:#c678dd;>as </span><span>server:
+</span><span>    server.</span><span style=color:#e06c75;>login</span><span>(sender_email, password)
+</span><span>    server.</span><span style=color:#e06c75;>sendmail</span><span>(sender_email, receiver_email, message)
+</span></code></pre><p>The Real Python tutorial is from 2018, so chances are that there are better ways to send emails nowadays. After looking through the standard library docs, I think the following snippet is a more idiomatic way to achieve the same thing in 2022. The main difference is that it removes duplication with the help of the <code>EmailMessage</code> class.<pre class=language-python data-lang=python style=background-color:#282c34;color:#dcdfe4;><code class=language-python data-lang=python><span style=color:#c678dd;>import </span><span>smtplib, ssl
+</span><span style=color:#c678dd;>from </span><span>email.message </span><span style=color:#c678dd;>import </span><span>EmailMessage
+</span><span>
+</span><span>port </span><span style=color:#c678dd;>= </span><span style=color:#e5c07b;>465  </span><span style=color:#5c6370;># For SSL
+</span><span>smtp_server </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"smtp.domain.net"
+</span><span>sender_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"my@domain.at"       </span><span style=color:#5c6370;># Enter your address
+</span><span>receiver_email </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"your@domain.com"  </span><span style=color:#5c6370;># Enter receiver address
+</span><span>password </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"MY_PASSWORD"            </span><span style=color:#5c6370;># Enter password
+</span><span>
+</span><span>subject </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"Hi there"
+</span><span>content </span><span style=color:#c678dd;>= </span><span style=color:#98c379;>"This message is sent from Python."
+</span><span>
+</span><span>msg </span><span style=color:#c678dd;>= </span><span style=color:#e06c75;>EmailMessage</span><span>()
+</span><span>msg[</span><span style=color:#98c379;>'Subject'</span><span>] </span><span style=color:#c678dd;>= </span><span>subject
+</span><span>msg[</span><span style=color:#98c379;>'From'</span><span>] </span><span style=color:#c678dd;>= </span><span>sender_email
+</span><span>msg[</span><span style=color:#98c379;>'To'</span><span>] </span><span style=color:#c678dd;>= </span><span>receiver_email
+</span><span>msg.</span><span style=color:#e06c75;>set_content</span><span>(content)
+</span><span>
+</span><span>context </span><span style=color:#c678dd;>= </span><span>ssl.</span><span style=color:#e06c75;>create_default_context</span><span>()
+</span><span style=color:#c678dd;>with </span><span>smtplib.</span><span style=color:#e06c75;>SMTP_SSL</span><span>(smtp_server, port, </span><span style=color:#e06c75;>context</span><span style=color:#c678dd;>=</span><span>context) </span><span style=color:#c678dd;>as </span><span>server:
+</span><span>    server.</span><span style=color:#e06c75;>login</span><span>(sender_email, password)
+</span><span>    server.</span><span style=color:#e06c75;>send_message</span><span>(msg)
+</span></code></pre><p>You can find the discussion at this Mastodon <a rel="nofollow noreferrer" href=https://chaos.social/@ju/109489141171195265>post</a>.<blockquote class=note id=cc_license><i class="ri-creative-commons-line ri-lg"></i><div class=content><p>This work is licensed under <a rel="nofollow noreferrer" href=http://creativecommons.org/licenses/by-nc-sa/4.0/>CC BY-NC-SA 4.0</a>.</div></blockquote></article></main><aside class=blur><a aria-label="back to top" href=#top id=back-to-top><i class="ri-arrow-up-s-line ri-2x"></i></a></aside></div><footer><div class=copyright>Copyright © 2022 Julian Hofer. All rights reserved.</div><div class=credits><span>Powered by <a rel="noreferrer noopener" href=https://www.getzola.org/ target=_blank>Zola</a> and <a rel="noreferrer noopener" href=https://github.com/isunjn/serene target=_blank>Serene</a></span></div></footer><script src=/js/dark.js></script><script src=/js/toc.js></script><script src=/js/progress.js></script><script src=/js/lightense.min.js></script><script src=/js/img.js></script>
