@@ -52,7 +52,7 @@ Description=Ensure /nix is present
 Type=oneshot
 ExecStartPre=chattr -i /
 ExecStart=mkdir -p -m 0755 /nix
-ExecStart=chown -R YOUR_USER
+ExecStart=chown -R YOUR_USER /nix
 EcecStop=chattr +i /
 ```
 
