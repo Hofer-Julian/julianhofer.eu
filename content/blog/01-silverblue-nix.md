@@ -53,7 +53,7 @@ Type=oneshot
 ExecStartPre=chattr -i /
 ExecStart=mkdir -p -m 0755 /nix
 ExecStart=chown -R YOUR_USER /nix
-EcecStop=chattr +i /
+ExecStop=chattr +i /
 ```
 
 Now we create a [mount unit](https://www.freedesktop.org/software/systemd/man/systemd.mount.html) which mounts `/nix` from `~/.nix` during start up.
