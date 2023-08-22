@@ -56,9 +56,10 @@ This not only helps you to keep track which changes you made to your user enviro
 Convinced?
 Then let's get started!
 
-First, we add the `home-manager` channel to our nix channels.
+First, we add the `nixpkgs-unstable` and `home-manager` channels.
 
 ```bash
+$ nix-channel --add https://nixos.org/channels/nixpkgs-unstable
 $ nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 ```
 
