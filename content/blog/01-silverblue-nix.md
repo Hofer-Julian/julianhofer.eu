@@ -118,7 +118,7 @@ In the following snippet you see:
     glab
     ripgrep
   ];
-}^ter
+}
 ```
 
 
