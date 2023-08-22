@@ -1,6 +1,7 @@
 [[project]]
 name = "GUI development with Rust and GTK 4"
 desc = "Official `gtk4-rs` book describing how to create graphical user interfaces without requiring any GTK knowledge."
+tags = []
 links = [
 	{name = "Website", url = "https://gtk-rs.org/gtk4-rs/stable/latest/book/"},
     {name = "GitHub", url = "https://github.com/gtk-rs/gtk4-rs/tree/master/book"},
@@ -10,6 +11,7 @@ links = [
 [[project]]
 name = "iMOD Coupler"
 desc = "Application for coupling hydrological kernels."
+tags = []
 links = [
 	{name = "Website", url = "https://deltares.github.io/imod_coupler/"},
 	{name = "Github", url = "https://github.com/Deltares/imod_coupler"}
@@ -18,6 +20,7 @@ links = [
 [[project]]
 name = "MODFLOW 6"
 desc = "Finite-difference model to solve groundwater flow."
+tags = []
 links = [
 	{name = "Website", url = "https://www.usgs.gov/software/modflow-6-usgs-modular-hydrologic-model"},
 	{name = "Github", url = "https://github.com/MODFLOW-USGS/modflow6"}
