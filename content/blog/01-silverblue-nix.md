@@ -16,6 +16,10 @@ cc_license = true
 outdate_warn = false
 +++
 
+{% tip(note="") %}
+This post has been updated now that my contributions to the Determinate Nix installer have been [released](https://github.com/DeterminateSystems/nix-installer/releases/tag/v0.11.0).
+{% end %}
+
 There is a lot to like about [Fedora Silverblue](https://docs.fedoraproject.org/en-US/fedora-silverblue/).
 Updates are atomic and if there is something wrong with the newest version, you can always roll back.
 You always move between immutable images of your operating system, but that also means that installing packages with `dnf` doesn't work anymore.
@@ -30,82 +34,20 @@ Also, there are a couple of system directories that are inaccessible from within
 
 Nix is a cross-platform package manager with the [largest repository](https://repology.org/repositories/statistics/total) at the time of this writing.
 Like with Silverblue, upgrades in Nix are atomic and can be rolled back.
-The only problem is that Nix expects to be able to store its data at `/nix`, which cannot simply be created on Silverblue.
-
-## Mount `/nix`
-
-What we can do however, is to have the nix store at a different directory and then mount this directory at `/nix`.
-First, we add a systemd [service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html) which ensures that the directory `/nix` is present.
-For that, the service has to temporarily disable the immutability of `/` with `chattr`.
-Run the following command to create or modify the service.
-Also, make sure to replace `YOUR_USER` with your actual username. 
-
+In order to install it, we run the [Determinate Nix installer](https://github.com/DeterminateSystems/nix-installer):
 ```bash
-$ sudo systemctl edit --full --force ensure-nix-dir.service
+$ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-
-```ini
-[Unit]
-Description=Ensure /nix is present
-[Service]
-Type=oneshot
-ExecStartPre=chattr -i /
-ExecStart=mkdir -p -m 0755 /nix
-ExecStart=chown -R YOUR_USER /nix
-ExecStop=chattr +i /
-```
-
-Now we create a [mount unit](https://www.freedesktop.org/software/systemd/man/systemd.mount.html) which mounts `/nix` from `~/.nix` during start up.
-Again, replace `YOUR_USER` with your username.
+To get started using Nix, open a new shell or run source `nix-daemon.sh` as shown below:
 
 
 ```bash
-$ sudo systemctl edit --full --force nix.mount
-```
-
-```ini
-[Unit]
-Description=Mount /nix from ~/.nix
-After=local-fs.target var-home.mount ensure-nix-dir.service
-Wants=ensure-nix-dir.service
-[Mount]
-Options=bind,nofail
-What=/home/YOUR_USER/.nix
-Where=/nix
-[Install]
-WantedBy=multi-user.target
-```
-
-In order to immediately activate the mount, execute the following:
-
-```bash
-$ sudo systemctl enable --now nix.mount
-```
-
-If you now check up on `/nix`, it should be owned by your user and have the following permission bits:
-
-```bash
-$ ls -ld /nix
-drwxr-xr-x. 1 YOUR_USER root 16 22. Nov 18:08 /nix/
-```
-
-## Install Nix
-
-Next, we perform a single-user installation of Nix as described in the [Nix manual](https://nixos.org/manual/nix/stable/installation/installing-binary.html#single-user-installation).
-
-```bash
-$ sh <(curl -L https://nixos.org/nix/install) --no-daemon
-```
-
-In order to have the corresponding tools in your `$PATH`, either restart your shell or source `nix.sh` as shown below.
-
-```bash
-$ source $HOME/.nix-profile/etc/profile.d/nix.sh
+$ . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
 Now you can install tools on your machine with [`nix-env`](https://nixos.org/manual/nix/stable/command-ref/nix-env.html).
-If that's all you want, then you can skip over to the last [section](./#toolbx).
+If that's all you want, then you can skip over to the last [section](./#distrobox).
 
 # Home Manager
 
@@ -126,27 +68,19 @@ Then we update our nix-channels.
 $ nix-channel --update
 ```
 
-Home Manager requires `NIX_PATH` to be set before we install it, so let's export it.
-
-```bash
-$ export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
-```
-
 Now we can install `home-manager` with `nix-shell`.
 
 ```bash
 $ nix-shell '<home-manager>' -A install
 ```
 
-Log off and log in again.
-After opening your terminal, `home-manager` should be in your `$PATH`.
 You can edit its config file by executing:
 
 ```bash
 $ home-manager edit
 ```
 
-This should open a file with a couple of values already set.
+This should open your editor with a couple of values already set.
 In the following snippet you see:
 - how to set your git data with useful [extra config](https://leosiddle.com/posts/2020/07/git-config-pull-rebase-autostash/), and
 - how to ensure that a set of [nix packages](https://search.nixos.org/packages?channel=unstable) is installed.
@@ -183,8 +117,8 @@ In the following snippet you see:
     gh
     glab
     ripgrep
-  ];  
-}
+  ];
+}^ter
 ```
 
 
@@ -204,23 +138,23 @@ unpacking channels...
 $ home-manager switch
 ```
 
-# Toolbx
+# Distrobox
 
-Most of the things you can do with a toolbx you can also do with Nix, but there is a steep learning curve.
-At least at the beginning you will want to be able to access the config and packages managed by Home Manager inside your toolbx.
+[Distrobox](https://distrobox.privatedns.org/) is a tool that creates container that are tightly integrated with the host.
+This makes it perfect for development tasks.
 
-First enter your toolbx.
+First install distrobox.
 ```bash
-$ toolbox enter
+$ rpm-ostree install --apply-live distrobox
 ```
 
-Then create a symlink from `~/.nix` to `/nix`.
-
+Enter your distrobox with:
 ```bash
-$ sudo ln -s ~/.nix /nix
+$ distrobox enter
 ```
 
-Leave toolbox and enter again.
+Distrobox mounts `/nix` inside of your container.
+This way you can continue using Nix and the apps you've installed with it.
 To see if everything is working as expected, you can try to view your git config with the cat-replacement [`bat`](https://github.com/sharkdp/bat#syntax-highlighting):
 
 ```bash
