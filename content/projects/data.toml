@@ -1,6 +1,6 @@
 [[project]]
 name = "GUI development with Rust and GTK 4"
-desc = "Official `gtk4-rs` book describing how to create graphical user interfaces without requiring any GTK knowledge."
+desc = "The official book describing how to create graphical user interfaces with Rust and GTK 4."
 tags = []
 links = [
 	{name = "Website", url = "https://gtk-rs.org/gtk4-rs/stable/latest/book/"},
@@ -9,11 +9,20 @@ links = [
 ]
 
 [[project]]
-name = "iMOD Coupler"
-desc = "Application for coupling hydrological kernels."
+name = "Ribasim"
+desc = "Water resources model written in Julia."
 tags = []
 links = [
-	{name = "Website", url = "https://deltares.github.io/imod_coupler/"},
+	{name = "Website", url = "https://deltares.github.io/Ribasim/"},
+	{name = "Github", url = "https://github.com/Deltares/Ribasim"}
+]
+
+[[project]]
+name = "iMOD Coupler"
+desc = "Application for coupling hydrological models."
+tags = []
+links = [
+	{name = "Website", url = "https://deltares.github.io/iMOD-Documentation/coupler.html"},
 	{name = "Github", url = "https://github.com/Deltares/imod_coupler"}
 ]
 
