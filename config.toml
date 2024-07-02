@@ -37,7 +37,7 @@ anchors = "on"
 [extra]
 name = "Julian Hofer"                             # Your name
 id = "julianhofer"                                # Your id/username/handle
-bio = "Numerical software developer and GNOME foundation member"  # Your bio
+bio = "Software developer and GNOME foundation member"  # Your bio
 avatar = "img/avatar.webp"                        # Your avatar
 links = [
     {name = "GitHub", icon = "github", url = "https://github.com/Hofer-Julian"},

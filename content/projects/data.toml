@@ -9,6 +9,15 @@ links = [
 ]
 
 [[project]]
+name = "pixi"
+desc = "A package manager and workflow tool built on the foundation of the conda ecosystem."
+tags = []
+links = [
+	{name = "Website", url = "https://pixi.sh"},
+	{name = "Github", url = "https://github.com/prefix-dev/pixi"}
+]
+
+[[project]]
 name = "Ribasim"
 desc = "Water resources model written in Julia."
 tags = []
