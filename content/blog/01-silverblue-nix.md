@@ -16,6 +16,10 @@ cc_license = true
 outdate_warn = false
 +++
 
+{% warning(note="") %}
+Since Fedora 42, the Determinate Nix installer [doesn't work anymore](https://github.com/DeterminateSystems/nix-installer/issues/1445) out of the box. 
+{% end %}
+
 {% tip(note="") %}
 This post has been updated now that my contributions to the Determinate Nix installer have been [released](https://github.com/DeterminateSystems/nix-installer/releases/tag/v0.11.0).
 {% end %}
