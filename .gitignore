@@ -1,1 +1,4 @@
 public/*
+# pixi environments
+.pixi
+*.egg-info
