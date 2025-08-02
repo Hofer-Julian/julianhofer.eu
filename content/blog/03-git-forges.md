@@ -27,12 +27,12 @@ so let me write up my current workflow for the latter.
 
 Most people use Git in combination with modern Git forges like GitHub and GitLab.
 Git doesn't know anything about these forges, which is why CLI tools exist to close that gap.
-It's still good to know how handle things without them, so I will also explain how to do things with only Git.
+It's still good to know how to handle things without them, so I will also explain how to do things with only Git.
 For GitHub there's [`gh`](https://cli.github.com/) and for GitLab there's [`glab`](https://docs.gitlab.com/editor_extensions/gitlab_cli/).
 Both of them are Go binaries without any dependencies that work on Linux, macOS and Windows.
 If you don't like any of the provided installation methods, you can simply download the binary, make it executable and put it in your `PATH`.
 
-Luckily they also have mostly the same command line interface.
+Luckily, they also have mostly the same command line interface.
 First, you have to login with the command that corresponds to your git forge:
 ```
 gh auth login
@@ -40,7 +40,7 @@ glab auth login
 ```
 
 In the case of `gh` this even authenticates Git with GitHub.
-With GitLab, you still have to setup authentication via [SSH](https://docs.gitlab.com/user/ssh/). 
+With GitLab, you still have to set up authentication via [SSH](https://docs.gitlab.com/user/ssh/). 
 
 ## Working Solo
 
@@ -52,6 +52,7 @@ From that point on, all you have to do is:
 - commit
 - push
 - repeat
+
 On its own there aren't a lot of reasons to choose this approach over a file syncing service like [Nextcloud](https://nextcloud.com/sign-up/).
 No, the main reason you do this, is because you are either already familiar with the git workflow or want to get used to it.
 
@@ -59,12 +60,12 @@ No, the main reason you do this, is because you are either already familiar with
 
 Git truly shines as soon as you start collaborating with others.
 On a high level this works like this:
-- you modify some files in a Git repository
-- you propose your changes via the Git forge
-- maintainers of the repository review your changes
+- you modify some files in a Git repository,
+- you propose your changes via the Git forge,
+- maintainers of the repository review your changes, and
 - as soon as they are happy with your changes, they will integrate your changes into the main branch of the repository.
 
-As before you clone the repository with `git clone <REPO>`.
+As before, you clone the repository with `git clone <REPO>`.
 Change directories into that repository and run `git status`.
 The branch that it shows is the default branch and is probably called `main` or `master`.
 Before you start a new branch, you will run the following two commands to make sure you start with the latest state of the repository:
@@ -82,7 +83,7 @@ git switch <BRANCH>
 
 That way you can work on multiple features at the same time and easily keep your default synchronized with the remote repository.
 
-The next step, is to open a pull request on GitHub or merge request on GitLab.
+The next step is to open a pull request on GitHub or merge request on GitLab.
 They are equivalent, so I will call both of them pull requests from now on.
 The idea of a pull request is to integrate the changes from one branch into another branch (typically the default branch).
 However, you don't necessarily want to give every potential contributor the power to create new branches on your repository.
@@ -93,7 +94,7 @@ Contributors can now create branches on their forks and open pull requests based
 If you don't have push access to the repository, now it's time to create your own fork.
 Without the forge CLI tools, you first fork the repository in the web interface.
 
-Then you'd run the following commands:
+Then, you run the following commands:
 
 ```shell
 git remote rename origin upstream
@@ -136,11 +137,11 @@ glab mr create
 Often you want to check out a pull request on your own machine so you verify that it works as expected.
 This is surprisingly difficult with Git alone.
 
-First you navigate to the repository where the pull request originates from in your web browser.
+First, you navigate to the repository where the pull request originates from in your web browser.
 This might be the same repository, or it could be a fork.
 
 If it's the same repository, checking out their branch is not too difficult.
-You run `git switch <BRANCH>` and it's done.
+You run `git switch <BRANCH>`, and it's done.
 
 However, if it's a fork, the simplest way is to add a remote for the user that opened the pull request, fetch their repo and finally check out their branch.
 
