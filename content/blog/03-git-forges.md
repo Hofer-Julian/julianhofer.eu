@@ -165,3 +165,9 @@ It's a one-liner, works no matter if the pull request is coming from the repo it
 
 If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted out of that.
 This is useful for changes that are easier to do yourself than communicating via a comment.
+
+## Conclusion
+
+When I first heard of `gh`'s predecessor `hub`, I thought this is merely a tool for people who insist on doing everything in the terminal.
+I only realized relatively recently, that Git forge tools are in fact the missing piece to an efficient Git workflow.
+Hopefully, you now have a better idea of the appeal of these tools!
