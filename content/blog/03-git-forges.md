@@ -1,7 +1,7 @@
 +++
 title = "How I use Git"
 date = 2025-08-04
-draft = true
+draft = false
 
 [taxonomies]
 categories = ["Git"]
