@@ -1,5 +1,5 @@
 +++
-title = "How I use Git"
+title = "Git Forges Made Simple: gh & glab"
 date = 2025-08-04
 draft = false
 
