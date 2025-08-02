@@ -90,17 +90,12 @@ That is why the concept of forks exists.
 Forks are copies of a repository that are hosted on the same Git forge.
 Contributors can now create branches on their forks and open pull requests based on these branches.
 
-If you don't have push access to the repository, now it's time to create your own fork:
+If you don't have push access to the repository, now it's time to create your own fork.
+Without the forge CLI tools, you first fork the repository in the web interface.
 
-```
-gh repo fork --remote
-glab repo fork --remote
-```
-
-If you were to do this manually, you'd first fork the repository in the web interface.
 Then you'd run the following commands:
 
-```
+```shell
 git remote rename origin upstream
 git remote add origin <FORK>
 ```
@@ -108,8 +103,26 @@ git remote add origin <FORK>
 When you cloned your repository, Git set the default branch of the original repo as upstream branch of your local default branch.
 This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
 
+Running one of these commands, both forks the repository and sets up the git remotes for you.
 
-With `pr create` you can then open the pull request.
+```
+gh repo fork --remote
+glab repo fork --remote
+```
+
+Then you need to push your local branch.
+With Git, you first have to tell it that it should create the corresponding branch on the remote and set it as upstream branch.
+
+```
+git push --set-upstream origin <BRANCH>
+```
+
+Then you open the repository in the web interface, where it will suggest opening a pull request.
+The upstream branch of your local branch is configured, which means you can update your remote by running `git push` without any additional arguments. 
+
+
+
+`pr create` directly pushes and sets up your branch and opens the pull request for you.
 If you have a fork available, it will ask you whether you want to push your branch there: 
 
 ```
@@ -117,16 +130,8 @@ gh pr create
 glab mr create
 ```
 
-You can do something similar with Git:
-
-```
-git push --set-upstream origin <BRANCH>
-```
-
-If you now open the repository in the web interface, it will suggest opening a pull request.
-
-
-The upstream branch of your local branch is configured, which means you can update your remote by running `git push` without any additional arguments. 
-
 
 ## Checking out Pull Requests
+
+While the command presented before are already more efficient than their git+web counterparts, the essential command is `pr checkout`.
+The authors of these tools obviously agree since they added the convenient alias `co`.
