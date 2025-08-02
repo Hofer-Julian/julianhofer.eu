@@ -119,12 +119,12 @@ git push --set-upstream origin <BRANCH>
 ```
 
 Then you open the repository in the web interface, where it will suggest opening a pull request.
-The upstream branch of your local branch is configured, which means you can update your remote by running `git push` without any additional arguments. 
+The upstream branch of your local branch is now configured, which means you can update your remote by running `git push` without any additional arguments.
 
 
 
-`pr create` directly pushes and sets up your branch and opens the pull request for you.
-If you have a fork available, it will ask you whether you want to push your branch there: 
+Using `pr create` directly pushes and sets up your branch, and opens the pull request for you.
+If you have a fork available, it will ask whether you want to push your branch there:
 
 ```
 gh pr create
@@ -134,18 +134,18 @@ glab mr create
 
 ## Checking out Pull Requests
 
-Often you want to check out a pull request on your own machine so you verify that it works as expected.
+Often, you want to check out a pull request on your own machine to verify that it works as expected.
 This is surprisingly difficult with Git alone.
 
-First, you navigate to the repository where the pull request originates from in your web browser.
+First, navigate to the repository where the pull request originates in your web browser.
 This might be the same repository, or it could be a fork.
 
-If it's the same repository, checking out their branch is not too difficult.
-You run `git switch <BRANCH>`, and it's done.
+If it's the same repository, checking out their branch is not too difficult:
+you run `git switch <BRANCH>`, and it's done.
 
-However, if it's a fork, the simplest way is to add a remote for the user that opened the pull request, fetch their repo and finally check out their branch.
+However, if it's a fork, the simplest way is to add a remote for the user who opened the pull request, fetch their repo, and finally check out their branch.
 
-This then looks like this:
+This looks like this:
 
 ```shell
 git remote add <USER> <FORK_OF_USER>
@@ -154,14 +154,14 @@ git switch <USER>/<BRANCH>
 ```
 
 
-With the forge CLIs all you have to do is:
+With the forge CLIs, all you have to do is:
 
 ```shell
 gh pr checkout <PR_NUMBER>
 glab mr checkout <MR_NUMBER>
 ```
 
-It's a one-line, works no matter if the pull request is coming from the repo itself or a fork and it doesn't set up any additional remotes.
+It's a one-liner, works no matter if the pull request is coming from the repo itself or a fork, and it doesn't set up any additional remotes.
 
-If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted-out of that.
-This is useful for changes that are easier to do yourself than communicating via a comment. 
+If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted out of that.
+This is useful for changes that are easier to do yourself than communicating via a comment.
