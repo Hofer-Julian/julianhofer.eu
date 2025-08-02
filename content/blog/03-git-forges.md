@@ -46,7 +46,7 @@ With GitLab, you still have to setup authentication via [SSH](https://docs.gitla
 
 The simplest way to use Git is to use it like a backup system.
 First, you create a new repository on either [Github](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) or [GitLab](https://docs.gitlab.com/user/project/).
-Then you clone it with `git clone <REPO_URL>`.
+Then you clone it with `git clone <REPO>`.
 From that point on, all you have to do is:
 - do some work
 - commit
@@ -64,20 +64,20 @@ On a high level this works like this:
 - maintainers of the repository review your changes
 - as soon as they are happy with your changes, they will integrate your changes into the main branch of the repository.
 
-As before you clone the repository with `git clone <REPO_URL>`.
+As before you clone the repository with `git clone <REPO>`.
 Change directories into that repository and run `git status`.
 The branch that it shows is the default branch and is probably called `main` or `master`.
 Before you start a new branch, you will run the following two commands to make sure you start with the latest state of the repository:
 
 ```shell
-git switch <default-branch>
+git switch <DEFAULT-BRANCH>
 git pull
 ```
 
-You switch and create a new branch called `my-new-feature` with:
+You switch and create a new branch with:
 
 ```shell
-git switch my-new-feature
+git switch <BRANCH>
 ```
 
 That way you can work on multiple features at the same time and easily keep your default synchronized with the remote repository.
@@ -90,16 +90,26 @@ That is why the concept of forks exists.
 Forks are copies of a repository that are hosted on the same Git forge.
 Contributors can now create branches on their forks and open pull requests based on these branches.
 
-If don't have push access to the repository, now it's time to create your own fork:
+If you don't have push access to the repository, now it's time to create your own fork:
 
 ```
-gh repo fork
-glab repo fork
+gh repo fork --remote
+glab repo fork --remote
 ```
 
-# Add collapsed section on how to setup remotes with git
+If you were to do this manually, you'd first fork the repository in the web interface.
+Then you'd run the following commands:
 
-With this command you can then open the pull request.
+```
+git remote rename origin upstream
+git remote add origin <FORK>
+```
+
+When you cloned your repository, Git set the default branch of the original repo as upstream branch of your local default branch.
+This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
+
+
+With `pr create` you can then open the pull request.
 If you have a fork available, it will ask you whether you want to push your branch there: 
 
 ```
@@ -107,6 +117,16 @@ gh pr create
 glab mr create
 ```
 
-# Add section on how to push the branch with git
+You can do something similar with Git:
+
+```
+git push --set-upstream origin <BRANCH>
+```
+
+If you now open the repository in the web interface, it will suggest opening a pull request.
+
+
+The upstream branch of your local branch is configured, which means you can update your remote by running `git push` without any additional arguments. 
+
 
 ## Checking out Pull Requests
