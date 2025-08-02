@@ -17,11 +17,7 @@ outdate_warn = false
 +++
 
 {% warning(note="") %}
-Since Fedora 42, the Determinate Nix installer [doesn't work anymore](https://github.com/DeterminateSystems/nix-installer/issues/1445) out of the box. 
-{% end %}
-
-{% tip(note="") %}
-This post has been updated now that my contributions to the Determinate Nix installer have been [released](https://github.com/DeterminateSystems/nix-installer/releases/tag/v0.11.0).
+Since Fedora 42, the Determinate Nix installer [doesn't work anymore](https://github.com/DeterminateSystems/nix-installer/issues/1445) out of the box.
 {% end %}
 
 There is a lot to like about [Fedora Silverblue](https://docs.fedoraproject.org/en-US/fedora-silverblue/).
@@ -33,7 +29,7 @@ There, the `dnf` command is readily available and can be used as usual.
 This is convenient for development, but not necessarily outside it.
 Whenever you want to use an installed CLI tool, you now have to enter the toolbx beforehand.
 Also, there are a couple of system directories that are inaccessible from within the container.
- 
+
 # Nix
 
 Nix is a cross-platform package manager with the [largest repository](https://repology.org/repositories/statistics/total) at the time of this writing.
@@ -95,9 +91,9 @@ In the following snippet you see:
 
 {
   # Leave `home.username`, `home.homeDirectory`, `home.stateVersion`
-  # and `programs.home-manager.enable` as they are 
-  
-  # Set git config 
+  # and `programs.home-manager.enable` as they are
+
+  # Set git config
   programs.git = {
     enable = true;
     userName  = "Julian Hofer";
@@ -114,7 +110,7 @@ In the following snippet you see:
       };
     };
   };
-  
+
   # Ensure that the following packages are installed
   home.packages = with pkgs; [
     bat
