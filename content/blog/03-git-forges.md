@@ -81,7 +81,7 @@ You switch and create a new branch with:
 git switch <BRANCH>
 ```
 
-That way you can work on multiple features at the same time and easily keep your default synchronized with the remote repository.
+That way you can work on multiple features at the same time and easily keep your default branch synchronized with the remote repository.
 
 The next step is to open a pull request on GitHub or merge request on GitLab.
 They are equivalent, so I will call both of them pull requests from now on.
