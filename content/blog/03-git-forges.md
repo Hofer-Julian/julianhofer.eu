@@ -191,3 +191,5 @@ glab mr view --web
 When I first heard of `gh`'s predecessor `hub`, I thought this is merely a tool for people who insist on doing everything in the terminal.
 I only realized relatively recently that Git forge tools are in fact the missing piece to an efficient Git workflow.
 Hopefully, you now have a better idea of the appeal of these tools!
+
+*Many thanks to [Sabrina](https://github.com/M-Sabrina) and [Lucas](https://github.com/lucascolley) for their comments and suggestions on this article* 
