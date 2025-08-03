@@ -169,5 +169,5 @@ This is useful for changes that are easier to do yourself than communicating via
 ## Conclusion
 
 When I first heard of `gh`'s predecessor `hub`, I thought this is merely a tool for people who insist on doing everything in the terminal.
-I only realized relatively recently, that Git forge tools are in fact the missing piece to an efficient Git workflow.
+I only realized relatively recently that Git forge tools are in fact the missing piece to an efficient Git workflow.
 Hopefully, you now have a better idea of the appeal of these tools!
