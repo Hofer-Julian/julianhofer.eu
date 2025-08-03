@@ -193,3 +193,5 @@ I only realized relatively recently that Git forge tools are in fact the missing
 Hopefully, you now have a better idea of the appeal of these tools!
 
 *Many thanks to [Sabrina](https://github.com/M-Sabrina) and [Lucas](https://github.com/lucascolley) for their comments and suggestions on this article* 
+
+You can find the discussion at this Mastodon [post](https://chaos.social/@ju/114966203312328797).
