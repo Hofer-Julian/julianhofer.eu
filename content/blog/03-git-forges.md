@@ -104,8 +104,11 @@ git remote add origin <FORK>
 When you cloned your repository, Git set the default branch of the original repo as the upstream branch for your local default branch.
 This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
 
+### Git Forge Tools
+
 Alternatively, you can use the forge tool that corresponds to your git forge.
-A single command, both forks the repository and sets up the git remotes for you.
+You still clone and switch branches with Git as shown before.
+Then, you only need a single command to both fork the repository and set up the git remotes.
 
 ```
 gh repo fork --remote
@@ -121,7 +124,6 @@ git push --set-upstream origin <BRANCH>
 
 Then you open the repository in the web interface, where it will suggest opening a pull request.
 The upstream branch of your local branch is now configured, which means you can update your remote by running `git push` without any additional arguments.
-
 
 
 Using `pr create` directly pushes and sets up your branch, and opens the pull request for you.
