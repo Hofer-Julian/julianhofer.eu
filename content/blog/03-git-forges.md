@@ -101,18 +101,11 @@ git remote rename origin upstream
 git remote add origin <FORK>
 ```
 
-<<<<<<< HEAD
 When you cloned your repository, Git set the default branch of the original repo as the upstream branch for your local default branch.
-This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
-
-Running one of these commands both forks the repository and sets up the git remotes for you.
-=======
-When you cloned your repository, Git sets the default branch of the original repo as upstream branch of your local default branch.
 This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
 
 Alternatively, you can use the forge tool that corresponds to your git forge.
 A single command, both forks the repository and sets up the git remotes for you.
->>>>>>> 0f15b6e (Address Lucas comments)
 
 ```
 gh repo fork --remote
