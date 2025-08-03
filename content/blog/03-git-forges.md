@@ -54,20 +54,20 @@ From that point on, all you have to do is:
 - repeat
 
 On its own there aren't a lot of reasons to choose this approach over a file syncing service like [Nextcloud](https://nextcloud.com/sign-up/).
-No, the main reason you do this, is because you are either already familiar with the git workflow or want to get used to it.
+No, the main reason you do this, is because you are either already familiar with the git workflow, or want to get used to it.
 
 ## Contributing
 
 Git truly shines as soon as you start collaborating with others.
 On a high level this works like this:
-- you modify some files in a Git repository,
+- You modify some files in a Git repository,
 - you propose your changes via the Git forge,
 - maintainers of the repository review your changes, and
 - as soon as they are happy with your changes, they will integrate your changes into the main branch of the repository.
 
 As before, you clone the repository with `git clone <REPO>`.
 Change directories into that repository and run `git status`.
-The branch that it shows is the default branch and is probably called `main` or `master`.
+The branch that it shows is the default branch which is probably called `main` or `master`.
 Before you start a new branch, you will run the following two commands to make sure you start with the latest state of the repository:
 
 ```shell
@@ -108,21 +108,21 @@ This is preserved by the remote rename, which is why the default branch can stil
 
 Alternatively, you can use the forge tool that corresponds to your git forge.
 You still clone and switch branches with Git as shown before.
-Then, you only need a single command to both fork the repository and set up the git remotes.
+However, you only need a single command to both fork the repository and set up the git remotes.
 
 ```
 gh repo fork --remote
 glab repo fork --remote
 ```
 
-Then you need to push your local branch.
+Then, you need to push your local branch.
 With Git, you first have to tell it that it should create the corresponding branch on the remote and set it as upstream branch.
 
 ```
 git push --set-upstream origin <BRANCH>
 ```
 
-Then you open the repository in the web interface, where it will suggest opening a pull request.
+Next, you open the repository in the web interface, where it will suggest opening a pull request.
 The upstream branch of your local branch is now configured, which means you can update your remote by running `git push` without any additional arguments.
 
 
