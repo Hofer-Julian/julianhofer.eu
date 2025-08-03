@@ -175,6 +175,15 @@ glab mr list
 If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted out of that.
 This is useful for changes that are easier to do yourself than communicating via a comment.
 
+Finally, you can check out the status of your pull request with `pr view`.
+By adding `--web`, it will directly open your web browser for you:
+
+```shell
+gh pr view --web
+glab mr view --web
+```
+
+
 ## Conclusion
 
 When I first heard of `gh`'s predecessor `hub`, I thought this is merely a tool for people who insist on doing everything in the terminal.
