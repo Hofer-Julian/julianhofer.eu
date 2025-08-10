@@ -5,10 +5,11 @@ import starlightBlog from "starlight-blog";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://julianhofer.eu",
   integrations: [
     starlight({
       plugins: [starlightBlog()],
-      title: "My Docs",
+      title: "Home",
       social: [
         {
           icon: "github",
@@ -25,24 +26,15 @@ export default defineConfig({
           icon: "linkedin",
           label: "LinkedIn",
         },
-          {
+        {
           href: "mailto:julianhofer@gnome.org",
           icon: "email",
           label: "Email",
         },
       ],
       sidebar: [
-        {
-          label: "Guides",
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: "Example Guide", slug: "guides/example" },
-          ],
-        },
-        {
-          label: "Reference",
-          autogenerate: { directory: "reference" },
-        },
+        { slug: "about-me" },
+        { slug: "projects" },
       ],
     }),
   ],
