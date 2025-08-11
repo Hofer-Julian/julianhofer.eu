@@ -4,7 +4,7 @@ date: 2025-08-04
 tags: ["Git", "GitHub", "GitLab"]
 draft: false
 ---
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Steps, Card } from '@astrojs/starlight/components';
 
 When I set the goal for myself to contribute to open source back in 2018,
 I mostly struggled with two technical challenges:
@@ -47,7 +47,12 @@ With GitLab, you still have to set up authentication via [SSH](https://docs.gitl
 
 The simplest way to use Git is to use it like a backup system.
 First, you create a new repository on either [Github](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) or [GitLab](https://docs.gitlab.com/user/project/).
-Then you clone it with `git clone <REPO>`.
+Then you clone the repository:
+
+```shell
+git clone <REPO>
+```
+
 From that point on, all you have to do is:
 - do some work
 - commit
@@ -66,23 +71,38 @@ On a high level this works like this:
 - maintainers of the repository review your changes, and
 - as soon as they are happy with your changes, they will integrate your changes into the main branch of the repository.
 
-As before, you clone the repository with `git clone <REPO>`.
-Change directories into that repository and run `git status`.
-The branch that it shows is the default branch which is probably called `main` or `master`.
+### Starting Out With a Fresh Branch
+
+
+<Steps>
+
+1. You will want to start out with the latest upstream changes in the default branch.
+You can find out its name by running the following command:
+
+    ```shell
+    git ls-remote --symref origin HEAD
+    ```
+
+2. Chances are it displays either `ref/heads/main` or `refs/heads/master`.
+The last component is the branch, so the default branch will be called either `main` or `master`.
 Before you start a new branch, you will run the following two commands to make sure you start with the latest state of the repository:
 
-```shell
-git switch <DEFAULT-BRANCH>
-git pull
-```
+    ```shell
+    git switch <DEFAULT-BRANCH>
+    git pull
+    ```
 
-You switch and create a new branch with:
+3. You switch and create a new branch with:
 
-```shell
-git switch --create <BRANCH>
-```
+    ```shell
+    git switch --create <BRANCH>
+    ```
 
-That way you can work on multiple features at the same time and easily keep your default branch synchronized with the remote repository.
+    That way you can work on multiple features at the same time and easily keep your default branch synchronized with the remote repository.
+
+</Steps>
+
+### Open a Pull Request
 
 The next step is to open a pull request on GitHub or merge request on GitLab.
 They are equivalent, so I will call both of them pull requests from now on.
@@ -92,140 +112,154 @@ That is why the concept of forks exists.
 Forks are copies of a repository that are hosted on the same Git forge.
 Contributors can now create branches on their forks and open pull requests based on these branches.
 
-If you don't have push access to the repository, now it's time to create your own fork.
-Without the forge CLI tools, you first fork the repository in the web interface.
+<Steps>
+1. If you don't have push access to the repository, now it's time to create your own fork.
+    <Tabs syncKey="with-without">
+      <TabItem label="With Forge Tools">
+      With the Git forge tools, you only need a single command to both fork the repository and set up the git remotes.
+      <Tabs syncKey="forge">
+        <TabItem label="GitHub">
+          ```shell
+          gh repo fork --remote
+          ```
+        </TabItem>
+        <TabItem label="GitLab">
+          ```shell
+          glab repo fork --remote
+          ```
+        </TabItem>
+      </Tabs>
+      </TabItem>
+      <TabItem label="Without Forge Tools">
+        Without the forge CLI tools, you first fork the repository in the web interface.
 
-Then, you run the following commands:
+        Then, you run the following commands:
 
-```shell
-git remote rename origin upstream
-git remote add origin <FORK>
-```
+        ```shell
+        git remote rename origin upstream
+        git remote add origin <FORK>
+        ```
 
-When you cloned your repository, Git set the default branch of the original repo as the upstream branch for your local default branch.
-This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
+        When you cloned your repository, Git set the default branch of the original repo as the upstream branch for your local default branch.
+        This is preserved by the remote rename, which is why the default branch can still be updated from upstream with `git pull` and no additional arguments.
+      </TabItem>
+    </Tabs>
 
-### Git Forge Tools
+2. Then, you open the Pull Request
 
-Alternatively, you can use the forge tool that corresponds to your git forge.
-You still clone and switch branches with Git as shown before.
-However, you only need a single command to both fork the repository and set up the git remotes.
+    <Tabs syncKey="with-without">
+      <TabItem label="With Forge Tools">
+        Using `pr create` directly pushes and sets up your branch, and opens the pull request for you.
+        If you have a fork available, it will ask whether you want to push your branch there:
 
-<Tabs syncKey="forge">
-  <TabItem label="GitHub">
-    ```shell
-    gh repo fork --remote
-    ```
-  </TabItem>
-  <TabItem label="GitLab">
-    ```shell
-    glab repo fork --remote
-    ```
-  </TabItem>
-</Tabs>
+        <Tabs syncKey="forge">
+          <TabItem label="GitHub">
+            ```shell
+            gh pr create
+            ```
+          </TabItem>
+          <TabItem label="GitLab">
+            ```shell
+            glab mr create
+            ```
+          </TabItem>
+        </Tabs>
+      </TabItem>
+      <TabItem label="Without Forge Tools">
+        With Git, you first have to tell it that it should create the corresponding branch on the remote and set it as upstream branch.
 
-Then, you need to push your local branch.
-With Git, you first have to tell it that it should create the corresponding branch on the remote and set it as upstream branch.
+        ```shell
+        git push --set-upstream origin <BRANCH>
+        ```
 
-```shell
-git push --set-upstream origin <BRANCH>
-```
-
-Next, you open the repository in the web interface, where it will suggest opening a pull request.
-The upstream branch of your local branch is now configured, which means you can update your remote by running `git push` without any additional arguments.
-
-
-Using `pr create` directly pushes and sets up your branch, and opens the pull request for you.
-If you have a fork available, it will ask whether you want to push your branch there:
-
-<Tabs syncKey="forge">
-  <TabItem label="GitHub">
-    ```shell
-    gh pr create
-    ```
-  </TabItem>
-  <TabItem label="GitLab">
-    ```shell
-    glab mr create
-    ```
-  </TabItem>
-</Tabs>
+        Next, you open the repository in the web interface, where it will suggest opening a pull request.
+        The upstream branch of your local branch is now configured, which means you can update your remote by running `git push` without any additional arguments.
+      </TabItem>
+    </Tabs>
+</Steps>
 
 
 ## Checking out Pull Requests
 
 Often, you want to check out a pull request on your own machine to verify that it works as expected.
-This is surprisingly difficult with Git alone.
 
-First, navigate to the repository where the pull request originates in your web browser.
-This might be the same repository, or it could be a fork.
+<Tabs syncKey="with-without">
+  <TabItem label="With Forge Tools">
+    <Card>
+      With the forge CLIs, all you have to do is:
 
-If it's the same repository, checking out their branch is not too difficult:
-you run `git switch <BRANCH>`, and it's done.
+      <Tabs syncKey="forge">
+        <TabItem label="GitHub">
+          ```shell
+          gh pr checkout <PR_NUMBER>
+          ```
+        </TabItem>
+        <TabItem label="GitLab">
+          ```shell
+          glab mr checkout <MR_NUMBER>
+          ```
+        </TabItem>
+      </Tabs>
+      It's a one-liner, works no matter if the pull request is coming from the repo itself or a fork, and it doesn't set up any additional remotes.
 
-However, if it's a fork, the simplest way is to add a remote for the user who opened the pull request, fetch their repo, and finally check out their branch.
+      You don't even have to open your browser to get the pull request number.
+      Simply run the following commands, and it will give you a list of all open pull requests:
 
-This looks like this:
+      <Tabs syncKey="forge">
+        <TabItem label="GitHub">
+          ```shell
+          gh pr list
+          ```
+        </TabItem>
+        <TabItem label="GitLab">
+          ```shell
+          glab mr list
+          ```
+        </TabItem>
+      </Tabs>
 
-```shell
-git remote add <USER> <FORK_OF_USER>
-git fetch <USER>
-git switch <USER>/<BRANCH>
-```
+      If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted out of that.
+      This is useful for changes that are easier to do yourself than communicating via a comment.
 
+      Finally, you can check out the status of your pull request with `pr view`.
+      By adding `--web`, it will directly open your web browser for you:
 
-With the forge CLIs, all you have to do is:
+      <Tabs syncKey="forge">
+        <TabItem label="GitHub">
+          ```shell
+          gh pr view --web
+          ```
+        </TabItem>
+        <TabItem label="GitLab">
+          ```shell
+          glab mr view --web
+          ```
+        </TabItem>
+      </Tabs>
 
-<Tabs syncKey="forge">
-  <TabItem label="GitHub">
-    ```shell
-    gh pr checkout <PR_NUMBER>
-    ```
+    </Card>
   </TabItem>
-  <TabItem label="GitLab">
-    ```shell
-    glab mr checkout <MR_NUMBER>
-    ```
+  <TabItem label="Without Forge Tools">
+    <Card>
+      This is surprisingly difficult with Git alone.
+      First, navigate to the repository where the pull request originates in your web browser.
+      This might be the same repository, or it could be a fork.
+
+      If it's the same repository, checking out their branch is not too difficult:
+      you run `git switch <BRANCH>`, and it's done.
+
+      However, if it's a fork, the simplest way is to add a remote for the user who opened the pull request, fetch their repo, and finally check out their branch.
+
+      This looks like this:
+
+      ```shell
+      git remote add <USER> <FORK_OF_USER>
+      git fetch <USER>
+      git switch <USER>/<BRANCH>
+      ```
+    </Card>
   </TabItem>
 </Tabs>
-
-It's a one-liner, works no matter if the pull request is coming from the repo itself or a fork, and it doesn't set up any additional remotes.
-
-You don't even have to open your browser to get the pull request number.
-Simply run the following commands, and it will give you a list of all open pull requests:
-
-<Tabs syncKey="forge">
-  <TabItem label="GitHub">
-    ```shell
-    gh pr list
-    ```
-  </TabItem>
-  <TabItem label="GitLab">
-    ```shell
-    glab mr list
-    ```
-  </TabItem>
-</Tabs>
-
-If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted out of that.
-This is useful for changes that are easier to do yourself than communicating via a comment.
-
-Finally, you can check out the status of your pull request with `pr view`.
-By adding `--web`, it will directly open your web browser for you:
-
-<Tabs syncKey="forge">
-  <TabItem label="GitHub">
-    ```shell
-    gh pr view --web
-    ```
-  </TabItem>
-  <TabItem label="GitLab">
-    ```shell
-    glab mr view --web
-    ```
-  </TabItem>
-</Tabs>
-
 
 
 ## Conclusion
