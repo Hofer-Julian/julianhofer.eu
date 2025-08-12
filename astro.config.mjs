@@ -3,13 +3,17 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightBlog from "starlight-blog";
 
+const site = "https://julianhofer.eu";
+
 // https://astro.build/config
 export default defineConfig({
-  site: "https://julianhofer.eu",
+  site,
   integrations: [
     starlight({
       plugins: [starlightBlog()],
       title: "Home",
+      favicon: "favicon.ico",
+      customCss: ["./src/styles/custom.css"],
       social: [
         {
           icon: "github",
@@ -32,10 +36,17 @@ export default defineConfig({
           label: "Email",
         },
       ],
-      sidebar: [
-        { slug: "about-me" },
-        { slug: "projects" },
-      ],
+      	head: [
+				{
+					tag: 'meta',
+					attrs: { property: 'og:image', content: site + '/og.png?v=1' },
+				},
+				{
+					tag: 'meta',
+					attrs: { property: 'twitter:image', content: site + '/og.png?v=1' },
+				},
+			],
+      sidebar: [{ slug: "about-me" }],
     }),
   ],
   redirects: {
