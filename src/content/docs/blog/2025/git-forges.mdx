@@ -253,22 +253,39 @@ Often, you want to check out a pull request on your own machine to verify that i
     <Card>
       Checking out a pull request is surprisingly involved with Git alone.
       First, navigate to the pull request in your web browser.
-      In this example, can see that the pull request proposes changes from the repository by `Hofer-Julian` to a repository by `prefix-dev`.
 
-      ![Web view of the pull request displaying that it comes from a fork](../../../../assets/github-pull-request-fork.png)
+      <Tabs>
+        <TabItem label="Fork">
+          In this example, can see that the pull request proposes changes from the repository by `Hofer-Julian` to a repository by `prefix-dev`.
+          If the both branches are on the same repository, click on the tab "Same Repository" above.
+          ![Web view of the pull request displaying that it comes from a fork](../../../../assets/github-pull-request-fork.png)
+          
+          If the pull request comes from a fork, you execute the following commands:
 
+          ```shell
+          # Add a remote for the user who opened the pull request
+          git remote add <USER> <FORK_OF_USER>
+          # Fetch their repo
+          git fetch <USER>
+          # Check out their branch
+          git switch <BRANCH>
+          ```
 
-      If it's the same repository, you run `git switch <BRANCH>`, and it's done.
+        </TabItem>
+        <TabItem label="Same Repository">
+          In this example, can see that the pull request proposes changes from the repository by `Hofer-Julian` to a repository by `prefix-dev`.
+          If the branches are on the different repositories, click on the tab "Fork" above.
+          ![Web view of the pull request displaying that it comes from a fork](../../../../assets/github-pull-request-same-repo.png)
 
-      However, if it's a fork, the simplest way is to add a remote for the user who opened the pull request, fetch their repo, and finally check out their branch.
+          If it's the same repository, you run checkout the pull request like this:
 
-      This looks like this:
+          ```shell
+          git fetch origin
+          git switch <BRANCH>
+          ```
 
-      ```shell
-      git remote add <USER> <FORK_OF_USER>
-      git fetch <USER>
-      git switch <USER>/<BRANCH>
-      ```
+        </TabItem>
+      </Tabs>    
     </Card>
   </TabItem>
 </Tabs>
