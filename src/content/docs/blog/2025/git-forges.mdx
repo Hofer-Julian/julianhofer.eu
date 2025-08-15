@@ -66,6 +66,7 @@ No, the main reason you do this, is because you are either already familiar with
 
 Git truly shines as soon as you start collaborating with others.
 On a high level this works like this:
+
 - You modify some files in a Git repository,
 - you propose your changes via the Git forge,
 - maintainers of the repository review your changes, and
@@ -73,6 +74,7 @@ On a high level this works like this:
 
 ### Starting Out With a Fresh Branch
 
+Let's go over the exact commands.
 
 <Steps>
 
@@ -105,30 +107,41 @@ Before you start a new branch, you will run the following two commands to make s
 ### Open a Pull Request
 
 The next step is to open a pull request on GitHub or merge request on GitLab.
-They are equivalent, so I will call both of them pull requests from now on.
+Even though they are named differently, they are exactly the same thing.
+Therefore, I will call both of them pull requests from now on.
 The idea of a pull request is to integrate the changes from one branch into another branch (typically the default branch).
 However, you don't necessarily want to give every potential contributor the power to create new branches on your repository.
 That is why the concept of forks exists.
 Forks are copies of a repository that are hosted on the same Git forge.
-Contributors can now create branches on their forks and open pull requests based on these branches.
+Contributors can now create branches on their own forks and open pull requests based on these branches.
 
 <Steps>
 1. If you don't have push access to the repository, now it's time to create your own fork.
     <Tabs syncKey="with-without">
       <TabItem label="With Forge Tools">
-      With the Git forge tools, you only need a single command to both fork the repository and set up the git remotes.
-      <Tabs syncKey="forge">
-        <TabItem label="GitHub">
-          ```shell
-          gh repo fork --remote
-          ```
-        </TabItem>
-        <TabItem label="GitLab">
-          ```shell
-          glab repo fork --remote
-          ```
-        </TabItem>
-      </Tabs>
+        With the Git forge tools, you only need a single command to both fork the repository and set up the git remotes.
+        <Tabs syncKey="forge">
+            <TabItem label="GitHub">
+
+                ```shell
+                gh repo fork --remote
+                ```
+
+                I don't know why `gh repo fork` doesn't set that for you,
+                but now we need to tell `gh` which repository is the default.
+                That way it knows against which repository you want to extend when opening a pull request.
+                We want to extend the original repository, so let's select that with the interactive picker.
+
+                ```shell
+                gh repo set-default
+                ```
+            </TabItem>
+            <TabItem label="GitLab">
+            ```shell
+            glab repo fork --remote
+            ```
+            </TabItem>
+        </Tabs>
       </TabItem>
       <TabItem label="Without Forge Tools">
         Without the forge CLI tools, you first fork the repository in the web interface.
@@ -145,11 +158,11 @@ Contributors can now create branches on their forks and open pull requests based
       </TabItem>
     </Tabs>
 
-2. Then, you open the Pull Request
+3. Then, you open the Pull Request
 
     <Tabs syncKey="with-without">
       <TabItem label="With Forge Tools">
-        Using `pr create` directly pushes and sets up your branch, and opens the pull request for you.
+        `pr create` directly pushes and sets up your branch, and then opens the pull request for you.
         If you have a fork available, it will ask whether you want to push your branch there:
 
         <Tabs syncKey="forge">
@@ -186,24 +199,7 @@ Often, you want to check out a pull request on your own machine to verify that i
 <Tabs syncKey="with-without">
   <TabItem label="With Forge Tools">
     <Card>
-      With the forge CLIs, all you have to do is:
-
-      <Tabs syncKey="forge">
-        <TabItem label="GitHub">
-          ```shell
-          gh pr checkout <PR_NUMBER>
-          ```
-        </TabItem>
-        <TabItem label="GitLab">
-          ```shell
-          glab mr checkout <MR_NUMBER>
-          ```
-        </TabItem>
-      </Tabs>
-      It's a one-liner, works no matter if the pull request is coming from the repo itself or a fork, and it doesn't set up any additional remotes.
-
-      You don't even have to open your browser to get the pull request number.
-      Simply run the following commands, and it will give you a list of all open pull requests:
+      First you check out which pull requests are available
 
       <Tabs syncKey="forge">
         <TabItem label="GitHub">
@@ -218,11 +214,25 @@ Often, you want to check out a pull request on your own machine to verify that i
         </TabItem>
       </Tabs>
 
-      If you have push access to the original repository, you will also be able to push to the branch of the pull request unless the author explicitly opted out of that.
-      This is useful for changes that are easier to do yourself than communicating via a comment.
+      You remember the ID and use it to check out the pull request.
 
-      Finally, you can check out the status of your pull request with `pr view`.
-      By adding `--web`, it will directly open your web browser for you:
+      <Tabs syncKey="forge">
+        <TabItem label="GitHub">
+          ```shell
+          gh pr checkout <PR_ID>
+          ```
+        </TabItem>
+        <TabItem label="GitLab">
+          ```shell
+          glab mr checkout <MR_ID>
+          ```
+        </TabItem>
+      </Tabs>
+
+      This works no matter if the pull request is coming from the repo itself or a fork, and it doesn't set up any additional remotes.
+
+      You can check out the status of your pull request with `pr view`.
+      By adding `--web`, it will directly open the web browser for you:
 
       <Tabs syncKey="forge">
         <TabItem label="GitHub">
@@ -241,12 +251,14 @@ Often, you want to check out a pull request on your own machine to verify that i
   </TabItem>
   <TabItem label="Without Forge Tools">
     <Card>
-      This is surprisingly difficult with Git alone.
-      First, navigate to the repository where the pull request originates in your web browser.
-      This might be the same repository, or it could be a fork.
+      Checking out a pull request is surprisingly involved with Git alone.
+      First, navigate to the pull request in your web browser.
+      In this example, can see that the pull request proposes changes from the repository by `Hofer-Julian` to a repository by `prefix-dev`.
 
-      If it's the same repository, checking out their branch is not too difficult:
-      you run `git switch <BRANCH>`, and it's done.
+      ![Web view of the pull request displaying that it comes from a fork](../../../../assets/github-pull-request-fork.png)
+
+
+      If it's the same repository, you run `git switch <BRANCH>`, and it's done.
 
       However, if it's a fork, the simplest way is to add a remote for the user who opened the pull request, fetch their repo, and finally check out their branch.
 
