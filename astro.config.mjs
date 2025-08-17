@@ -8,6 +8,10 @@ const site = "https://julianhofer.eu";
 // https://astro.build/config
 export default defineConfig({
   site,
+  image: {
+    layout: "constrained",
+    responsiveStyles: true
+  },
   integrations: [
     starlight({
       plugins: [starlightBlog()],
