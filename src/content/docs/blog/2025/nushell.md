@@ -115,6 +115,7 @@ As a reminder, that's how `reactionGroup` value looks like for the issue we look
 ```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | get 1
 | get reactionGroups
 ```
@@ -131,9 +132,10 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 
 Some issues will not have reactions at all
 
-```nu {3}
+```nu {4}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | get 0
 | get reactionGroups
 ```
@@ -144,9 +146,85 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰────────────╯
 ```
 
+```nu {5-8}
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
+| from json
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| get reactionGroups
+| each {
+    where content == THUMBS_UP
+}
+| first 5
+```
 
-Let's create a column that fits our needs better.
-We get the total count of thumbs up reactions for every row.
+```
+╭───┬────────────────────────────────────────╮
+│ 0 │ [list 0 items]                         │
+│ 1 │ ╭───┬───────────┬────────────────────╮ │
+│   │ │ # │  content  │       users        │ │
+│   │ ├───┼───────────┼────────────────────┤ │
+│   │ │ 0 │ THUMBS_UP │ ╭────────────┬───╮ │ │
+│   │ │   │           │ │ totalCount │ 1 │ │ │
+│   │ │   │           │ ╰────────────┴───╯ │ │
+│   │ ╰───┴───────────┴────────────────────╯ │
+│ 2 │ [list 0 items]                         │
+│ 3 │ [list 0 items]                         │
+│ 4 │ ╭───┬───────────┬────────────────────╮ │
+│   │ │ # │  content  │       users        │ │
+│   │ ├───┼───────────┼────────────────────┤ │
+│   │ │ 0 │ THUMBS_UP │ ╭────────────┬───╮ │ │
+│   │ │   │           │ │ totalCount │ 5 │ │ │
+│   │ │   │           │ ╰────────────┴───╯ │ │
+│   │ ╰───┴───────────┴────────────────────╯ │
+╰───┴────────────────────────────────────────╯
+```
+
+```nu {7}
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
+| from json
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| get reactionGroups
+| each {
+    where content == THUMBS_UP
+    | get users.totalCount
+}
+| first 5
+```
+
+```
+╭───┬────────────────╮
+│ 0 │ [list 0 items] │
+│ 1 │ ╭───┬───╮      │
+│   │ │ 0 │ 1 │      │
+│   │ ╰───┴───╯      │
+│ 2 │ [list 0 items] │
+│ 3 │ [list 0 items] │
+│ 4 │ ╭───┬───╮      │
+│   │ │ 0 │ 5 │      │
+│   │ ╰───┴───╯      │
+╰───┴────────────────╯
+```
+
+```nu {8, 10}
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
+| from json
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| get reactionGroups
+| each {
+    where content == THUMBS_UP
+    | get users.totalCount
+    | get 0 --optional
+}
+| first 2
+```
+
+```
+╭───┬───╮
+│ 0 │ 1 │
+│ 1 │ 5 │
+╰───┴───╯
+```
+
 
 
 ```nu {4-9}
@@ -156,8 +234,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
-                    | get --optional 0
-                    | default 0 }
+                    | get 0 --optional }
 | select reactionGroups thumbsUp
 | first 5
 ```
@@ -198,8 +275,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
-                    | get --optional 0 
-                    | default 0 }
+                    | get 0 --optional }
 | select title url thumbsUp
 | sort-by --reverse thumbsUp
 | first 5
@@ -232,8 +308,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
-                    | get --optional 0 
-                    | default 0 }
+                    | get 0 --optional }
 | select title url thumbsUp
 | sort-by --reverse thumbsUp
 | rename --column { thumbsUp: 👍 }
@@ -267,8 +342,7 @@ let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
-                    | get --optional 0 
-                    | default 0 }
+                    | get 0 --optional }
 | select title url thumbsUp
 | sort-by --reverse thumbsUp
 | rename --column { thumbsUp: 👍 }
