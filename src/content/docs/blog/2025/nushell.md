@@ -5,10 +5,43 @@ tags: ["Nushell"]
 draft: false
 ---
 
+There are multiple ways improve your experience in the terminal.
+You can get a nice prompt with [starship](https://starship.rs/).
+On Linux and macOS you can switch to the [fish](https://fishshell.com) shell.
+A lot of nice things like syntax highlighting, tab completion with help text and inline suggestions simply work out of the box.
+
+I however went for [Nushell](https://www.nushell.sh/).
+Unlike fish, Nu also works on Windows.
+Since I don't use Windows as my daily driver that shouldn't matter all that much to me.
+
+So let's see take a look at the pitch on Nu's homepage:
+
+> Nu pipelines use structured data so you can safely select, filter, and sort the same way every time. Stop parsing strings and start solving problems.
+
+When I first read this, this didn't really resonate with me.
+Maybe I didn't write enough shell scripts at that time.
+
+## Extract the top issues from a GitHub repository
+
+Let's look at a non-trivial example to find out why it's a big deal that Nu deals with structured data.
+Repositories like [Zed](https://zed.dev/) maintain an [issue](https://github.com/zed-industries/zed/issues/6952) that show's the issues with the highest number of 👍 reactions created in the last week.
+
+We will produce a script which does that as well using Nu.
+I will use the [Pixi](https://pixi.sh/latest/) repository,
+but any other repository with enough community engagement will do as well.
+
 ```nu
 let repo = "prefix-dev/pixi"
 ```
 
+Many modern CLI tools have a JSON interface and [`gh`](/blog/2025/git-forges/) is not different.
+We need the following fields:
+- `createdAt` so we only take the ones from last week
+- `reactionGroups` so we can extract the 👍 reactions
+- `title` and `url` to display them later
+
+In the end we will get a list of records.
+Each record represents one issue and we pick one them in order to get familiar with the structure.
 
 ```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
