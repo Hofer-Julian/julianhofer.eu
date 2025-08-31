@@ -1,7 +1,7 @@
 ---
-title: "Why Scripting is Nicer With Nushell"
+title: "Scripting is More Fun With Nushell"
 date: 2025-08-31
-tags: ["Nushell"]
+tags: ["Nushell", "GitHub", "Scripting"]
 draft: false
 ---
 
@@ -20,6 +20,9 @@ So let's see take a look at the pitch on Nu's homepage:
 
 When I first read this, this didn't really resonate with me.
 Maybe I didn't write enough shell scripts at that time.
+
+<!-- excerpt -->
+
 
 :::note
 At the time of this writing, Nu still makes breaking releases from time to time.
