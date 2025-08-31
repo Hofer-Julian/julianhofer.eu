@@ -1,5 +1,5 @@
 ---
-title: "Why scripting is nicer with nushell"
+title: "Why Scripting is Nicer With Nushell"
 date: 2025-08-31
 tags: ["Nushell"]
 draft: false
@@ -21,7 +21,7 @@ So let's see take a look at the pitch on Nu's homepage:
 When I first read this, this didn't really resonate with me.
 Maybe I didn't write enough shell scripts at that time.
 
-## Extract the top issues from a GitHub repository
+## Extract the Top Issues From a GitHub Repository
 
 Let's look at a non-trivial example to find out why it's a big deal that Nu deals with structured data.
 Repositories like [Zed](https://zed.dev/) maintain an [issue](https://github.com/zed-industries/zed/issues/6952) that show's the issues with the highest number of 👍 reactions created in the last week.
@@ -40,8 +40,8 @@ We need the following fields:
 - `reactionGroups` so we can extract the 👍 reactions
 - `title` and `url` to display them later
 
-In the end we will get a list of records.
-Each record represents one issue and we pick one them in order to get familiar with the structure.
+In the end we will get a [list](https://www.nushell.sh/lang-guide/chapters/types/basic_types/list.html#list) of [records](https://www.nushell.sh/lang-guide/chapters/types/basic_types/record.html#record) also known as a [table](https://www.nushell.sh/lang-guide/chapters/types/basic_types/table.html#table).
+Each record represents one issue, and we pick one in order to get familiar with the structure.
 
 ```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
@@ -64,11 +64,31 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰────────────────┴────────────────────────────────────────────────────────────╯
 ```
 
+Notice the pretty printing of the record without any prompting from our side.
+
+### Only take Issues From Last Week
+
+Nu also has first class support for [datetime](https://www.nushell.sh/lang-guide/chapters/types/basic_types/datetime.html#datetime) objects.
+This makes it easy to only take the rows of our table where `createdAt` falls within the last week.
+
+Normally, you'd set the current date like this:
+
+```
+let current date = date now
+```
+
+
+To make this reproducible in the future, I will set it to a fixed value instead:
+
+```
+let current_date = "Sun, 31 Aug 2025 12:00:00" | into datetime
+```
+
 
 ```nu {3-5}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= (date now) - 1wk
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | get createdAt
 | last 5
 ```
@@ -83,15 +103,60 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴──────────────────────╯
 ```
 
+We took the 5 elements.
+Since this blog post was written on August 31st, these results seem pretty reasonable. 
+
+
+### Extract the 👍 Reactions
+
+We don't have a nice way to extract the 👍 reactions.
+As a reminder, that's how `reactionGroup` value looks like for the issue we looked at originally
+
+```nu
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
+| from json
+| get 1
+| get reactionGroups
+```
+
+```
+╭───┬───────────┬────────────────────╮
+│ # │  content  │       users        │
+├───┼───────────┼────────────────────┤
+│ 0 │ THUMBS_UP │ ╭────────────┬───╮ │
+│   │           │ │ totalCount │ 1 │ │
+│   │           │ ╰────────────┴───╯ │
+╰───┴───────────┴────────────────────╯
+```
+
+Some issues will not have reactions at all
+
+```nu {3}
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
+| from json
+| get 0
+| get reactionGroups
+```
+
+```
+╭────────────╮
+│ empty list │
+╰────────────╯
+```
+
+
+Let's create a column that fits our needs better.
+We get the total count of thumbs up reactions for every row.
+
 
 ```nu {4-9}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= (date now) - 1wk
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
-                    | get --optional 0 
+                    | get --optional 0
                     | default 0 }
 | select reactionGroups thumbsUp
 | first 5
@@ -124,10 +189,12 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴────────────────────────────────────────┴──────────╯
 ```
 
+### Get the Five Issues With the Most 👍 Reactions
+
 ```nu {9-10}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= (date now) - 1wk
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
@@ -155,11 +222,13 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴─────────────────────────────────────────────────────────────────────────────────────┴──────────────────────────────┴──────────╯
 ```
 
+### Rename `thumbsUp` column
+
 
 ```nu {11}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= (date now) - 1wk
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
@@ -188,11 +257,13 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴─────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────┴────╯
 ```
 
+### Format table in Markdown Format
+
 
 ```nu {13}
 let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= (date now) - 1wk
+| where ($it.createdAt | into datetime) >= $current_date - 1wk
 | insert thumbsUp { $in.reactionGroups 
                     | where content == THUMBS_UP 
                     | get users.totalCount 
@@ -213,6 +284,8 @@ let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups
 |Environment variable of tasks are broken when defined inside task|https://github.com/prefix-dev/pixi/issues/4451|1|
 |Documentation: Add switchable pyproject.toml / pixi.toml code snippets|https://github.com/prefix-dev/pixi/issues/4452|1|
 
+
+## Create an Issue Containing the Top Issues
 
 ```nu
 gh issue create --title "Top issues last week" --body $top_issues_week
