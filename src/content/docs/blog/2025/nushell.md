@@ -103,7 +103,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴──────────────────────╯
 ```
 
-We took the 5 elements.
+We took the last 5 elements.
 Since this blog post was written on August 31st, these results seem pretty reasonable. 
 
 
@@ -146,14 +146,17 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰────────────╯
 ```
 
+
+
 ```nu {5-8}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
-| get reactionGroups
-| each {
-    where content == THUMBS_UP
+| insert thumbsUp {
+    $in.reactionGroups 
+    | where content == THUMBS_UP 
 }
+| get thumbsUp
 | first 5
 ```
 
@@ -179,15 +182,17 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴────────────────────────────────────────╯
 ```
 
+
 ```nu {7}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
-| get reactionGroups
-| each {
-    where content == THUMBS_UP
-    | get users.totalCount
+| insert thumbsUp { 
+    $in.reactionGroups 
+    | where content == THUMBS_UP
+    | get users.totalCount 
 }
+| get thumbsUp
 | first 5
 ```
 
@@ -209,19 +214,22 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
-| get reactionGroups
-| each {
-    where content == THUMBS_UP
-    | get users.totalCount
+| insert thumbsUp { 
+    $in.reactionGroups 
+    | where content == THUMBS_UP
+    | get users.totalCount 
     | get 0 --optional
 }
-| first 2
+| first 5
 ```
 
 ```
 ╭───┬───╮
-│ 0 │ 1 │
-│ 1 │ 5 │
+│ 0 │   │
+│ 1 │ 1 │
+│ 2 │   │
+│ 3 │   │
+│ 4 │ 5 │
 ╰───┴───╯
 ```
 
