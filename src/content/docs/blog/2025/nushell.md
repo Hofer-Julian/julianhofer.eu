@@ -372,3 +372,8 @@ let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups
 ```nu
 gh issue create --title "Top issues last week" --body $top_issues_week
 ```
+
+
+:::caution
+Nushell is unstable, blablabla
+:::
