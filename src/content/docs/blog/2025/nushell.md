@@ -235,7 +235,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 
 
 
-```nu {4-9}
+```nu {4-8}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
@@ -276,7 +276,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 
 ### Get the Five Issues With the Most 👍 Reactions
 
-```nu {9-10}
+```nu {9}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
@@ -309,7 +309,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ### Rename `thumbsUp` column
 
 
-```nu {11}
+```nu {10}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
@@ -343,7 +343,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ### Format table in Markdown Format
 
 
-```nu {13}
+```nu {12}
 let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
