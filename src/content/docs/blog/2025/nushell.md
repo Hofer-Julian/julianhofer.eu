@@ -21,12 +21,20 @@ So let's see take a look at the pitch on Nu's homepage:
 When I first read this, this didn't really resonate with me.
 Maybe I didn't write enough shell scripts at that time.
 
-## Extract the Top Issues From a GitHub Repository
+:::note
+At the time of this writing, Nu still makes breaking releases from time to time.
+If you are using Nu scripts in production, it is recommended to pin the version of Nu. 
+:::
+
+## Extract the Top Issues From a Repository
 
 Let's look at a non-trivial example to find out why it's a big deal that Nu deals with structured data.
-Repositories like [Zed](https://zed.dev/) maintain an [issue](https://github.com/zed-industries/zed/issues/6952) that show's the issues with the highest number of 👍 reactions created in the last week.
+Some GitHub repositories like [Zed's](https://github.com/zed-industries/zed) have an [issue](https://github.com/zed-industries/zed/issues/6952) that shows the issues with the highest number of 👍 reactions created within in the last week.
 
-We will produce a script which does that as well using Nu.
+We will produce a script that does that as well using Nu.
+You can follow my instructions in your terminal or within your favorite editor.
+Many editors support Nu's integrated language server, after saving, you just run `nu script.nu`
+
 I will use the [Pixi](https://pixi.sh/latest/) repository,
 but any other repository with enough community engagement will do as well.
 
@@ -64,7 +72,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰────────────────┴────────────────────────────────────────────────────────────╯
 ```
 
-Notice the pretty printing of the record without any prompting from our side.
+Notice that Nu pretty prints the record per default.
 
 ### Only take Issues From Last Week
 
@@ -73,14 +81,14 @@ This makes it easy to only take the rows of our table where `createdAt` falls wi
 
 Normally, you'd set the current date like this:
 
-```
-let current date = date now
+```nu
+let current_date = date now
 ```
 
 
 To make this reproducible in the future, I will set it to a fixed value instead:
 
-```
+```nu
 let current_date = "Sun, 31 Aug 2025 12:00:00" | into datetime
 ```
 
@@ -104,13 +112,13 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ```
 
 We took the last 5 elements.
-Since this blog post was written on August 31st, these results seem pretty reasonable. 
+Considering the value of `$current_date`, these results seem pretty reasonable. 
 
 
 ### Extract the 👍 Reactions
 
-We don't have a nice way to extract the 👍 reactions.
-As a reminder, that's how `reactionGroup` value looks like for the issue we looked at originally
+We don't have a nice way to extract the 👍 reactions yet, so let's work on that.
+As a reminder, that's how `reactionGroup` value looks like for the issue we looked at originally.
 
 ```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
@@ -130,7 +138,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴───────────┴────────────────────╯
 ```
 
-Some issues will not have reactions at all
+This issue however does not have reactions at alls.
 
 ```nu {4}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
@@ -146,9 +154,11 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰────────────╯
 ```
 
+Let's insert a new column `thumbsUp`, which is based on the column `reactionGroup`.
+Of this reaction table, it only takes rows with `THUMBS_UP` reaction.
+Rows that don't have any `THUMBS_UP` reactions will result in an empty list.
 
-
-```nu {5-8}
+```nu {4-8}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
@@ -182,6 +192,8 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴────────────────────────────────────────╯
 ```
 
+We care about the total count.
+We get that by accessing `users.totalCount`.
 
 ```nu {7}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
@@ -210,7 +222,13 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴────────────────╯
 ```
 
-```nu {8}
+Some rows now have empty lists, and some have lists containing a single entry: the number of 👍 reactions.
+With `get 0` we get the first element of a list.
+By adding `--optional`, this command doesn't fail on empty lists but returns `null` instead.
+We replace `null` with 0, by running `default 0`.
+
+
+```nu {8-9}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
@@ -219,6 +237,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
     | where content == THUMBS_UP
     | get users.totalCount 
     | get 0 --optional
+    | default 0
 }
 | get thumbsUp
 | first 5
@@ -226,10 +245,10 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 
 ```
 ╭───┬───╮
-│ 0 │   │
+│ 0 │ 0 │
 │ 1 │ 1 │
-│ 2 │   │
-│ 3 │   │
+│ 2 │ 0 │
+│ 3 │ 0 │
 │ 4 │ 5 │
 ╰───┴───╯
 ```
@@ -237,104 +256,117 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 
 ### Get the Five Issues With the Most 👍 Reactions
 
-```nu {8-9}
+The three columns we truly care about are `thumbsUp`, `title` and `url`, so let's select those.
+We also sort the table, so that the issues with the most 👍 reactions come first.
+
+```nu {11-12}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
-| insert thumbsUp { $in.reactionGroups 
-                    | where content == THUMBS_UP 
-                    | get users.totalCount 
-                    | get 0 --optional }
-| select title url thumbsUp
+| insert thumbsUp { 
+    $in.reactionGroups 
+    | where content == THUMBS_UP 
+    | get users.totalCount 
+    | get 0 --optional
+    | default 0 
+}
+| select thumbsUp title url
 | sort-by --reverse thumbsUp
 | first 5
 ```
 
 ```
-╭───┬─────────────────────────────────────────────────────────────────────────────────────┬──────────────────────────────┬──────────╮
-│ # │                                        title                                        │             url              │ thumbsUp │
-├───┼─────────────────────────────────────────────────────────────────────────────────────┼──────────────────────────────┼──────────┤
-│ 0 │ Proposal to allow the use of Pixi workspaces through a named registry of workspaces │ https://github.com/prefix-de │        5 │
-│   │                                                                                     │ v/pixi/issues/4461           │          │
-│ 1 │ pixi-build: load variants from packages or files                                    │ https://github.com/prefix-de │        1 │
-│   │                                                                                     │ v/pixi/issues/4429           │          │
-│ 2 │ `pixi run echo '{{ hello }}'` fails                                                 │ https://github.com/prefix-de │        1 │
-│   │                                                                                     │ v/pixi/issues/4432           │          │
-│ 3 │ Environment variable of tasks are broken when defined inside task                   │ https://github.com/prefix-de │        1 │
-│   │                                                                                     │ v/pixi/issues/4451           │          │
-│ 4 │ Documentation: Add switchable pyproject.toml / pixi.toml code snippets              │ https://github.com/prefix-de │        1 │
-│   │                                                                                     │ v/pixi/issues/4452           │          │
-╰───┴─────────────────────────────────────────────────────────────────────────────────────┴──────────────────────────────┴──────────╯
+╭───┬──────────┬─────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────╮
+│ # │ thumbsUp │                                        title                                        │                      url                       │
+├───┼──────────┼─────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────┤
+│ 0 │        5 │ Proposal to allow the use of Pixi workspaces through a named registry of workspaces │ https://github.com/prefix-dev/pixi/issues/4461 │
+│ 1 │        1 │ pixi-build: load variants from packages or files                                    │ https://github.com/prefix-dev/pixi/issues/4429 │
+│ 2 │        1 │ `pixi run echo '{{ hello }}'` fails                                                 │ https://github.com/prefix-dev/pixi/issues/4432 │
+│ 3 │        1 │ Environment variable of tasks are broken when defined inside task                   │ https://github.com/prefix-dev/pixi/issues/4451 │
+│ 4 │        1 │ Documentation: Add switchable pyproject.toml / pixi.toml code snippets              │ https://github.com/prefix-dev/pixi/issues/4452 │
+╰───┴──────────┴─────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────╯
 ```
 
-### Rename `thumbsUp` column
+### Rename `thumbsUp` Column
 
+Unicode can be a bit annoying to type in the terminal, but now it's type to rename our `thumbsUp` column to 👍.
 
-```nu {10}
+```nu {13}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
-| insert thumbsUp { $in.reactionGroups 
-                    | where content == THUMBS_UP 
-                    | get users.totalCount 
-                    | get 0 --optional }
-| select title url thumbsUp
+| insert thumbsUp { 
+    $in.reactionGroups 
+    | where content == THUMBS_UP 
+    | get users.totalCount 
+    | get 0 --optional
+    | default 0
+}
+| select thumbsUp title url
 | sort-by --reverse thumbsUp
 | rename --column { thumbsUp: 👍 }
 | first 5
 ```
 
 ```
-╭───┬─────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────┬────╮
-│ # │                                        title                                        │                url                 │ 👍 │
-├───┼─────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────┼────┤
-│ 0 │ Proposal to allow the use of Pixi workspaces through a named registry of workspaces │ https://github.com/prefix-dev/pixi │  5 │
-│   │                                                                                     │ /issues/4461                       │    │
-│ 1 │ pixi-build: load variants from packages or files                                    │ https://github.com/prefix-dev/pixi │  1 │
-│   │                                                                                     │ /issues/4429                       │    │
-│ 2 │ `pixi run echo '{{ hello }}'` fails                                                 │ https://github.com/prefix-dev/pixi │  1 │
-│   │                                                                                     │ /issues/4432                       │    │
-│ 3 │ Environment variable of tasks are broken when defined inside task                   │ https://github.com/prefix-dev/pixi │  1 │
-│   │                                                                                     │ /issues/4451                       │    │
-│ 4 │ Documentation: Add switchable pyproject.toml / pixi.toml code snippets              │ https://github.com/prefix-dev/pixi │  1 │
-│   │                                                                                     │ /issues/4452                       │    │
-╰───┴─────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────┴────╯
+╭───┬────┬─────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────╮
+│ # │ 👍 │                                        title                                        │                      url                       │
+├───┼────┼─────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────┤
+│ 0 │  5 │ Proposal to allow the use of Pixi workspaces through a named registry of workspaces │ https://github.com/prefix-dev/pixi/issues/4461 │
+│ 1 │  1 │ pixi-build: load variants from packages or files                                    │ https://github.com/prefix-dev/pixi/issues/4429 │
+│ 2 │  1 │ `pixi run echo '{{ hello }}'` fails                                                 │ https://github.com/prefix-dev/pixi/issues/4432 │
+│ 3 │  1 │ Environment variable of tasks are broken when defined inside task                   │ https://github.com/prefix-dev/pixi/issues/4451 │
+│ 4 │  1 │ Documentation: Add switchable pyproject.toml / pixi.toml code snippets              │ https://github.com/prefix-dev/pixi/issues/4452 │
+╰───┴────┴─────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────╯
 ```
 
-### Format table in Markdown Format
+### Format Table in Markdown Format
 
+In the end, we want to add this table to the body of a GitHub issue.
+Luckily, Nu has integrated support to convert its values to Markdown.
 
-```nu {12}
+```nu {15}
 let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= $current_date - 1wk
-| insert thumbsUp { $in.reactionGroups 
-                    | where content == THUMBS_UP 
-                    | get users.totalCount 
-                    | get 0 --optional }
-| select title url thumbsUp
+| insert thumbsUp { 
+    $in.reactionGroups 
+    | where content == THUMBS_UP 
+    | get users.totalCount 
+    | get 0 --optional
+    | default 0
+}
+| select thumbsUp title url
 | sort-by --reverse thumbsUp
 | rename --column { thumbsUp: 👍 }
 | first 5
 | to md
 ```
 
-|title|url|👍|
+What you can see here, is the Markdown table directly embedded in this post which is also written in Markdown.
+
+|👍|title|url|
 |-|-|-|
-|Proposal to allow the use of Pixi workspaces through a named registry of workspaces|https://github.com/prefix-dev/pixi/issues/4461|5|
-|pixi-build: load variants from packages or files|https://github.com/prefix-dev/pixi/issues/4429|1|
-|`pixi run echo '{{ hello }}'` fails|https://github.com/prefix-dev/pixi/issues/4432|1|
-|Environment variable of tasks are broken when defined inside task|https://github.com/prefix-dev/pixi/issues/4451|1|
-|Documentation: Add switchable pyproject.toml / pixi.toml code snippets|https://github.com/prefix-dev/pixi/issues/4452|1|
+|5|Proposal to allow the use of Pixi workspaces through a named registry of workspaces|https://github.com/prefix-dev/pixi/issues/4461|
+|1|pixi-build: load variants from packages or files|https://github.com/prefix-dev/pixi/issues/4429|
+|1|`pixi run echo '{{ hello }}'` fails|https://github.com/prefix-dev/pixi/issues/4432|
+|1|Environment variable of tasks are broken when defined inside task|https://github.com/prefix-dev/pixi/issues/4451|
+|1|Documentation: Add switchable pyproject.toml / pixi.toml code snippets|https://github.com/prefix-dev/pixi/issues/4452|
 
 
-## Create an Issue Containing the Top Issues
+## Create the Issue
+
+Now we can create an issue with the table we just generated.
 
 ```nu
 gh issue create --title "Top issues last week" --body $top_issues_week
 ```
 
+How to update an existing issue is left as an exercise to the reader.
 
-:::caution
-Nushell is unstable, blablabla
-:::
+## Conclusion
+
+
+I hope I convinced you that scripting with Nushell can be a lot of fun.
+It's quick to type like bash and has proper data types like Python.
+With Nu, it's easy to interact with your data, you extend your pipeline until you are happy with what it does. 
