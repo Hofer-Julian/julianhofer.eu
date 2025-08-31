@@ -1,6 +1,6 @@
 ---
 title: "Why scripting is nicer with nushell"
-date: 2025-08-30
+date: 2025-08-31
 tags: ["Nushell"]
 draft: false
 ---
@@ -32,16 +32,16 @@ gh issue list --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= (date now) - 1wk
 | get createdAt
-| first 5
+| last 5
 ```
 
 ```
 ╭───┬──────────────────────╮
-│ 0 │ 2025-08-29T14:15:47Z │
-│ 1 │ 2025-08-29T13:11:13Z │
-│ 2 │ 2025-08-29T05:19:30Z │
-│ 3 │ 2025-08-28T17:37:37Z │
-│ 4 │ 2025-08-28T14:27:45Z │
+│ 0 │ 2025-08-25T11:28:37Z │
+│ 1 │ 2025-08-25T10:19:22Z │
+│ 2 │ 2025-08-25T10:07:58Z │
+│ 3 │ 2025-08-25T07:21:52Z │
+│ 4 │ 2025-08-24T17:00:35Z │
 ╰───┴──────────────────────╯
 ```
 
