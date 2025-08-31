@@ -12,6 +12,7 @@ A lot of nice things like syntax highlighting, tab completion with help text and
 
 However, I went for [Nushell](https://www.nushell.sh/).
 Unlike fish, Nu also works on Windows.
+Nu's interactive experience is nearly as nice as fish's out-of-the-box and just as nice with a few configuration tweaks.
 Since I don't use Windows as my daily driver that shouldn't matter all that much to me, but it can be an extra benefit.
 
 So let's take a look at the pitch on Nu's homepage:
