@@ -6,6 +6,11 @@ draft: false
 ---
 
 ```nu
+let repo = "prefix-dev/pixi"
+```
+
+
+```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | get 1
