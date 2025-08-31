@@ -55,6 +55,7 @@ We need the following fields:
 
 In the end we will get a [list](https://www.nushell.sh/lang-guide/chapters/types/basic_types/list.html#list) of [records](https://www.nushell.sh/lang-guide/chapters/types/basic_types/record.html#record) also known as a [table](https://www.nushell.sh/lang-guide/chapters/types/basic_types/table.html#table).
 Each record represents one issue, and we pick one in order to get familiar with the structure.
+Please note that this will return a different issue for you, since more issues will have been opened on this repo by the time you read this.
 
 ```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
@@ -84,24 +85,10 @@ Notice that Nu pretty prints the record per default.
 Nu also has first class support for [datetime](https://www.nushell.sh/lang-guide/chapters/types/basic_types/datetime.html#datetime) objects.
 This makes it easy to only take the rows of our table where `createdAt` falls within the last week.
 
-Normally, you'd set the current date like this:
-
-```nu
-let current_date = date now
-```
-
-
-To make this reproducible in the future, I will set it to a fixed value instead:
-
-```nu
-let current_date = "Sun, 31 Aug 2025 12:00:00" | into datetime
-```
-
-
 ```nu {3-5}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | get createdAt
 | last 5
 ```
@@ -117,7 +104,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ```
 
 We took the last 5 elements.
-Considering the value of `$current_date`, these results seem pretty reasonable. 
+Considering that this blog has been written on August 31st, these results seem pretty reasonable. 
 
 
 ### Extract the 👍 Reactions
@@ -128,7 +115,7 @@ As a reminder, that's how `reactionGroup` value looks like for the issue we look
 ```nu
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | get 1
 | get reactionGroups
 ```
@@ -148,7 +135,7 @@ This issue, however, does not have reactions at all.
 ```nu {4}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | get 0
 | get reactionGroups
 ```
@@ -166,7 +153,7 @@ Rows that don't have any `THUMBS_UP` reactions will result in an empty list.
 ```nu {4-8}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp {
     $in.reactionGroups 
     | where content == THUMBS_UP 
@@ -203,7 +190,7 @@ We get that by accessing `users.totalCount`.
 ```nu {7}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { 
     $in.reactionGroups 
     | where content == THUMBS_UP
@@ -236,7 +223,7 @@ We replace `null` with 0, by running `default 0`.
 ```nu {8-9}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { 
     $in.reactionGroups 
     | where content == THUMBS_UP
@@ -267,7 +254,7 @@ We also sort the table, so that the issues with the most 👍 reactions come fir
 ```nu {11-12}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { 
     $in.reactionGroups 
     | where content == THUMBS_UP 
@@ -299,7 +286,7 @@ Unicode can be a bit annoying to type in the terminal, but now it's type to rena
 ```nu {13}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { 
     $in.reactionGroups 
     | where content == THUMBS_UP 
@@ -333,7 +320,7 @@ Luckily, Nu has integrated support to convert its values to Markdown.
 ```nu {15}
 let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
-| where ($it.createdAt | into datetime) >= $current_date - 1wk
+| where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { 
     $in.reactionGroups 
     | where content == THUMBS_UP 
