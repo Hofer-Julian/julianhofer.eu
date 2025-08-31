@@ -6,7 +6,7 @@ draft: false
 ---
 
 ```nu
-gh issue list --json createdAt,reactionGroups,title,url
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | get 1
 ```
@@ -28,7 +28,7 @@ gh issue list --json createdAt,reactionGroups,title,url
 
 
 ```nu {3-5}
-gh issue list --json createdAt,reactionGroups,title,url
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= (date now) - 1wk
 | get createdAt
@@ -47,7 +47,7 @@ gh issue list --json createdAt,reactionGroups,title,url
 
 
 ```nu {4-9}
-gh issue list --json createdAt,reactionGroups,title,url
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { $in.reactionGroups 
@@ -87,7 +87,7 @@ gh issue list --json createdAt,reactionGroups,title,url
 ```
 
 ```nu {9-10}
-gh issue list --json createdAt,reactionGroups,title,url
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { $in.reactionGroups 
@@ -119,7 +119,7 @@ gh issue list --json createdAt,reactionGroups,title,url
 
 
 ```nu {11}
-gh issue list --json createdAt,reactionGroups,title,url
+gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { $in.reactionGroups 
@@ -151,8 +151,8 @@ gh issue list --json createdAt,reactionGroups,title,url
 ```
 
 
-```nu {1,13}
-let top_issues_week = gh issue list --json createdAt,reactionGroups,title,url
+```nu {13}
+let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 | from json
 | where ($it.createdAt | into datetime) >= (date now) - 1wk
 | insert thumbsUp { $in.reactionGroups 
