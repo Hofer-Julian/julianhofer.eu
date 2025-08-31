@@ -7,14 +7,14 @@ draft: false
 
 There are multiple ways improve your experience in the terminal.
 You can get a nice prompt with [starship](https://starship.rs/).
-On Linux and macOS you can switch to the [fish](https://fishshell.com) shell.
+On Linux and macOS, you can switch to the [fish](https://fishshell.com) shell.
 A lot of nice things like syntax highlighting, tab completion with help text and inline suggestions simply work out of the box.
 
-I however went for [Nushell](https://www.nushell.sh/).
+However, I went for [Nushell](https://www.nushell.sh/).
 Unlike fish, Nu also works on Windows.
-Since I don't use Windows as my daily driver that shouldn't matter all that much to me.
+Since I don't use Windows as my daily driver that shouldn't matter all that much to me, but it can be an extra benefit.
 
-So let's see take a look at the pitch on Nu's homepage:
+So let's take a look at the pitch on Nu's homepage:
 
 > Nu pipelines use structured data so you can safely select, filter, and sort the same way every time. Stop parsing strings and start solving problems.
 
@@ -36,7 +36,8 @@ Some GitHub repositories like [Zed's](https://github.com/zed-industries/zed) hav
 
 We will produce a script that does that as well using Nu.
 You can follow my instructions in your terminal or within your favorite editor.
-Many editors support Nu's integrated language server, after saving, you just run `nu script.nu`
+Many editors support Nu's integrated language server.
+After saving, you just run `nu script.nu`
 
 I will use the [Pixi](https://pixi.sh/latest/) repository,
 but any other repository with enough community engagement will do as well.
@@ -141,7 +142,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 ╰───┴───────────┴────────────────────╯
 ```
 
-This issue however does not have reactions at alls.
+This issue, however, does not have reactions at all.
 
 ```nu {4}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
@@ -371,5 +372,6 @@ How to update an existing issue is left as an exercise to the reader.
 
 
 I hope I convinced you that scripting with Nushell can be a lot of fun.
-It's quick to type like bash and has proper data types like Python.
-With Nu, it's easy to interact with your data, you extend your pipeline until you are happy with what it does. 
+It's quick to type like bash, and has proper data types like Python.
+
+With Nu, it's easy to interact with your data: You extend your pipeline until you are happy with what it does. 
