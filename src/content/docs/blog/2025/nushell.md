@@ -5,7 +5,7 @@ tags: ["Nushell", "GitHub", "Scripting"]
 draft: false
 ---
 
-There are multiple ways improve your experience in the terminal.
+There are multiple ways to improve your experience in the terminal.
 You can get a nice prompt with [starship](https://starship.rs/).
 On Linux and macOS, you can switch to the [fish](https://fishshell.com) shell.
 A lot of nice things like syntax highlighting, tab completion with help text and inline suggestions simply work out of the box.
