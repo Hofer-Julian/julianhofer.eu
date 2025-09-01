@@ -19,7 +19,7 @@ So let's take a look at the pitch on Nu's homepage:
 
 > Nu pipelines use structured data so you can safely select, filter, and sort the same way every time. Stop parsing strings and start solving problems.
 
-When I first read this, this didn't really resonate with me.
+When I first read this, it didn't really resonate with me.
 Maybe I didn't write enough shell scripts at that time.
 
 <!-- excerpt -->
