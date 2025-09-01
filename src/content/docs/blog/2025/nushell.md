@@ -281,7 +281,7 @@ gh issue list --repo $repo --json createdAt,reactionGroups,title,url
 
 ### Rename `thumbsUp` Column
 
-Unicode can be a bit annoying to type in the terminal, but now it's type to rename our `thumbsUp` column to 👍.
+Unicode can be a bit annoying to type in the terminal, but now it's time to rename our `thumbsUp` column to 👍.
 
 ```nu {13}
 gh issue list --repo $repo --json createdAt,reactionGroups,title,url
