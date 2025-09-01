@@ -15,6 +15,11 @@ Unlike fish, Nu also works on Windows.
 Nu's interactive experience is nearly as nice as fish's out-of-the-box and just as nice with a few configuration tweaks.
 Since I don't use Windows as my daily driver that shouldn't matter all that much to me, but it can be an extra benefit.
 
+Another common way of use case of shells is for scripting.
+After experimenting with commands in your terminal, you put the very same commands in a text file.
+In the case of Nu, you then execute that script with `nu script.nu`.
+This is the workflow where shells shine, and Nu is a prime example for that.
+
 So let's take a look at the pitch on Nu's homepage:
 
 > Nu pipelines use structured data so you can safely select, filter, and sort the same way every time. Stop parsing strings and start solving problems.
@@ -35,10 +40,7 @@ If you are using Nu scripts in production, it is recommended to pin the version 
 Let's look at a non-trivial example to find out why it's a big deal that Nu deals with structured data.
 Some GitHub repositories like [Zed's](https://github.com/zed-industries/zed) have an [issue](https://github.com/zed-industries/zed/issues/6952) that shows the issues with the highest number of 👍 reactions created within in the last week.
 
-We will produce a script that does that as well using Nu.
-You can follow my instructions in your terminal or within your favorite editor.
-Many editors support Nu's integrated language server.
-After saving, you just run `nu script.nu`
+We will now do the same with the help of Nushell.
 
 I will use the [Pixi](https://pixi.sh/latest/) repository,
 but any other repository with enough community engagement will do as well.
