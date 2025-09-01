@@ -362,4 +362,4 @@ How to update an existing issue is left as an exercise to the reader.
 I hope I convinced you that scripting with Nushell can be a lot of fun.
 It's quick to type like bash, and has proper data types like Python.
 
-With Nu, it's easy to interact with your data: You extend your pipeline until you are happy with what it does. 
+With Nu, it's easy to interact with your data: you extend your pipeline until you are happy with what it does. 
