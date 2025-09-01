@@ -1,7 +1,7 @@
 ---
 title: "How to send Emails via Python"
 date: 2022-12-28
-tags: ["Python", "Email"]
+tags: ["Python", "Email", "Scripting"]
 draft: false
 ---
 
