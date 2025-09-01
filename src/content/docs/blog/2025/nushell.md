@@ -335,7 +335,7 @@ let top_issues_week = gh issue list --repo $repo --json createdAt,reactionGroups
 | to md
 ```
 
-What you can see here, is the Markdown table directly embedded in this post which is also written in Markdown.
+What you can see here is the Markdown table directly embedded in this post, which is also written in Markdown.
 
 |👍|title|url|
 |-|-|-|
