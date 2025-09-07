@@ -50,7 +50,7 @@ export default defineConfig({
           attrs: { property: 'twitter:image', content: `${site}/og.png?v=1` },
          },
 			],
-      sidebar: [{ slug: "about-me" }],
+      sidebar: [{ slug: "about-me" }, { slug: "links" }],
     }),
   ],
   redirects: {
