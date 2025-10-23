@@ -8,6 +8,7 @@ excerpt: There is a lot to like about [Fedora Silverblue](https://docs.fedorapro
 
 :::caution
 Since Fedora 42, the Determinate Nix installer [doesn't work anymore](https://github.com/DeterminateSystems/nix-installer/issues/1445) out of the box.
+As of 2025, [Nix Toolbox](https://thrix.github.io/nix-toolbox/getting-started/) is a good alternative over installing Nix globally.
 :::
 
 There is a lot to like about [Fedora Silverblue](https://docs.fedoraproject.org/en-US/fedora-silverblue/).
