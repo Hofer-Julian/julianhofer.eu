@@ -3,6 +3,7 @@ title: "Scripting is More Fun With Nushell"
 date: 2025-08-31
 tags: ["Nushell", "GitHub", "Scripting"]
 draft: false
+excerpt: "In this blog post we will interactively build up a script with Nushell and have fun along the way"
 ---
 
 There are multiple ways to improve your experience in the terminal.
@@ -26,8 +27,6 @@ So let's take a look at the pitch on Nu's homepage:
 
 When I first read this, it didn't really resonate with me.
 Maybe I didn't write enough shell scripts at that time.
-
-<!-- excerpt -->
 
 
 :::note
